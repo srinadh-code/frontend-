@@ -4,7 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { UserPlus } from "lucide-react";
+import { UserPlus, Chrome } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const Signup = () => {
