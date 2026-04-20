@@ -1,129 +1,313 @@
-import { useState } from "react";
-import { departments } from "@/data/mockData";
+import { useEffect, useState } from "react";
+import { API } from "@/services/api";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Upload, CheckCircle2 } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Upload,
+  CheckCircle2,
+  FileText,
+  Briefcase,
+  Mail,
+  User,
+  Sparkles,
+} from "lucide-react";
 
 const UploadResume = () => {
-  const [department, setDepartment] = useState("");
-  const [subdepartment, setSubdepartment] = useState("");
+  const [departments, setDepartments] = useState<any[]>([]);
+  const [subdepartments, setSubDepartments] = useState<any[]>([]);
+
+  const [departmentId, setDepartmentId] = useState<number | null>(null);
+  const [subdepartmentId, setSubdepartmentId] = useState<number | null>(null);
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [skills, setSkills] = useState("");
   const [experience, setExperience] = useState("");
   const [file, setFile] = useState<File | null>(null);
-  const [errors, setErrors] = useState<Record<string, string>>({});
+
   const [submitted, setSubmitted] = useState(false);
-  const { toast } = useToast();
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const subdepts = departments.find(d => d.name === department)?.subdepartments || [];
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const dept = await API.get("departments/");
+        const sub = await API.get("subdepartments/");
+        setDepartments(dept.data);
+        setSubDepartments(sub.data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchData();
+  }, []);
 
-  const validate = () => {
-    const e: Record<string, string> = {};
-    if (!department) e.department = "Required";
-    if (!subdepartment) e.subdepartment = "Required";
-    if (!name.trim()) e.name = "Required";
-    if (!email.trim()) e.email = "Required";
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) e.email = "Invalid email";
-    if (!experience) e.experience = "Required";
-    if (!file) e.file = "Please upload a resume";
-    setErrors(e);
-    return Object.keys(e).length === 0;
-  };
+  const filteredSubDepartments = departmentId
+    ? subdepartments.filter((s) => s.department === departmentId)
+    : [];
 
-  const handleSubmit = (ev: React.FormEvent) => {
-    ev.preventDefault();
-    if (!validate()) return;
-    toast({ title: "Resume Uploaded!", description: `${name}'s resume has been submitted.` });
-    setSubmitted(true);
-  };
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    setErrorMessage("");
 
-  const handleReset = () => {
-    setDepartment(""); setSubdepartment(""); setName(""); setEmail("");
-    setExperience(""); setFile(null); setErrors({}); setSubmitted(false);
+    if (!file) {
+      setErrorMessage("Please upload a file");
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+
+      formData.append("department", String(departmentId));
+      formData.append("subdepartment", String(subdepartmentId));
+      formData.append("name", name);
+      formData.append("email", email);
+      formData.append("skills", skills || "Not provided");
+      formData.append("experience", String(experience));
+      formData.append("file", file);
+
+      await API.post("resumes/upload/", formData);
+
+      setSubmitted(true);
+    } catch (err: any) {
+      console.error(err);
+      setErrorMessage(
+        err?.response?.data?.error ||
+          JSON.stringify(err?.response?.data) ||
+          "Upload failed"
+      );
+    }
   };
 
   if (submitted) {
     return (
-      <div className="max-w-lg mx-auto text-center py-20">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-success/10 mb-6">
-          <CheckCircle2 className="w-8 h-8 text-success" />
+      <div className="mx-auto max-w-2xl">
+        <div className="rounded-[2rem] border border-slate-200 bg-white p-10 text-center shadow-sm">
+          <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-green-100">
+            <CheckCircle2 className="h-10 w-10 text-green-600" />
+          </div>
+
+          <h2 className="text-3xl font-extrabold text-slate-900">
+            Resume Uploaded Successfully!
+          </h2>
+          <p className="mt-3 text-base text-slate-500">
+            Your resume has been added successfully. You can upload another file
+            whenever you want.
+          </p>
+
+          <Button
+            onClick={() => {
+              setSubmitted(false);
+              setDepartmentId(null);
+              setSubdepartmentId(null);
+              setName("");
+              setEmail("");
+              setSkills("");
+              setExperience("");
+              setFile(null);
+              setErrorMessage("");
+            }}
+            className="mt-8 h-12 rounded-xl bg-[#16a34a] px-6 text-base font-semibold hover:bg-[#15803d]"
+          >
+            Upload Another
+          </Button>
         </div>
-        <h2 className="text-2xl font-bold font-heading text-foreground mb-2">Resume Submitted!</h2>
-        <p className="text-muted-foreground mb-8">The resume has been uploaded successfully.</p>
-        <Button onClick={handleReset}>Upload Another</Button>
       </div>
     );
   }
 
   return (
-    <div className="max-w-2xl mx-auto space-y-8">
-      <div>
-        <h1 className="text-2xl font-bold font-heading text-foreground">Upload Resume</h1>
-        <p className="text-muted-foreground mt-1">Submit a new resume to the system</p>
+    <div className="mx-auto max-w-5xl space-y-8">
+      {/* Top intro */}
+      <div className="rounded-[2rem] border border-green-100 bg-gradient-to-r from-[#eaf8ee] via-[#f4fbf6] to-white p-6 shadow-sm sm:p-8">
+        <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-medium text-green-700 shadow-sm">
+          <Sparkles className="h-4 w-4" />
+          Resume Upload Portal
+        </div>
+
+        <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+          Upload Resume
+        </h1>
+        <p className="mt-3 max-w-2xl text-sm text-slate-600 sm:text-base">
+          Add candidate details, choose department and subdepartment, then upload
+          the resume file securely.
+        </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-card rounded-xl border border-border p-6 lg:p-8 space-y-6" style={{ boxShadow: "var(--shadow-card)" }}>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <div className="space-y-2">
-            <Label>Department</Label>
-            <Select value={department} onValueChange={v => { setDepartment(v); setSubdepartment(""); }}>
-              <SelectTrigger><SelectValue placeholder="Select department" /></SelectTrigger>
-              <SelectContent>
-                {departments.map(d => <SelectItem key={d.name} value={d.name}>{d.name}</SelectItem>)}
-              </SelectContent>
-            </Select>
-            {errors.department && <p className="text-sm text-destructive">{errors.department}</p>}
+      {/* Error */}
+      {errorMessage && (
+        <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+          {errorMessage}
+        </div>
+      )}
+
+      {/* Main form */}
+      <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+        <form className="space-y-8" onSubmit={handleSubmit}>
+          {/* Department row */}
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <div className="space-y-2.5">
+              <Label className="text-sm font-semibold text-slate-800">
+                Department
+              </Label>
+              <Select
+                value={departmentId ? String(departmentId) : ""}
+                onValueChange={(v) => {
+                  setDepartmentId(Number(v));
+                  setSubdepartmentId(null);
+                }}
+              >
+                <SelectTrigger className="h-14 rounded-xl border-slate-200 text-base">
+                  <SelectValue placeholder="Select Department" />
+                </SelectTrigger>
+                <SelectContent>
+                  {departments.map((d) => (
+                    <SelectItem key={d.id} value={String(d.id)}>
+                      {d.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2.5">
+              <Label className="text-sm font-semibold text-slate-800">
+                SubDepartment
+              </Label>
+              <Select
+                value={subdepartmentId ? String(subdepartmentId) : ""}
+                onValueChange={(v) => setSubdepartmentId(Number(v))}
+              >
+                <SelectTrigger className="h-14 rounded-xl border-slate-200 text-base">
+                  <SelectValue placeholder="Select SubDepartment" />
+                </SelectTrigger>
+                <SelectContent>
+                  {filteredSubDepartments.map((s) => (
+                    <SelectItem key={s.id} value={String(s.id)}>
+                      {s.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
-          <div className="space-y-2">
-            <Label>Subdepartment</Label>
-            <Select value={subdepartment} onValueChange={setSubdepartment} disabled={!department}>
-              <SelectTrigger><SelectValue placeholder="Select subdepartment" /></SelectTrigger>
-              <SelectContent>
-                {subdepts.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
-              </SelectContent>
-            </Select>
-            {errors.subdepartment && <p className="text-sm text-destructive">{errors.subdepartment}</p>}
+          {/* Basic fields */}
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <div className="space-y-2.5">
+              <Label className="text-sm font-semibold text-slate-800">
+                Candidate Name
+              </Label>
+              <div className="relative">
+                <User className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+                <Input
+                  placeholder="Enter candidate name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="h-14 rounded-xl border-slate-200 pl-12 text-base"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2.5">
+              <Label className="text-sm font-semibold text-slate-800">
+                Email
+              </Label>
+              <div className="relative">
+                <Mail className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+                <Input
+                  placeholder="Enter email address"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="h-14 rounded-xl border-slate-200 pl-12 text-base"
+                />
+              </div>
+            </div>
           </div>
-        </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <div className="space-y-2">
-            <Label htmlFor="name">Full Name</Label>
-            <Input id="name" value={name} onChange={e => setName(e.target.value)} placeholder="John Doe" />
-            {errors.name && <p className="text-sm text-destructive">{errors.name}</p>}
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <div className="space-y-2.5">
+              <Label className="text-sm font-semibold text-slate-800">
+                Skills
+              </Label>
+              <div className="relative">
+                <FileText className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+                <Input
+                  placeholder="Enter skills"
+                  value={skills}
+                  onChange={(e) => setSkills(e.target.value)}
+                  className="h-14 rounded-xl border-slate-200 pl-12 text-base"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2.5">
+              <Label className="text-sm font-semibold text-slate-800">
+                Experience
+              </Label>
+              <div className="relative">
+                <Briefcase className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+                <Input
+                  type="number"
+                  placeholder="Enter experience"
+                  value={experience}
+                  onChange={(e) => setExperience(e.target.value)}
+                  className="h-14 rounded-xl border-slate-200 pl-12 text-base"
+                />
+              </div>
+            </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="john@example.com" />
-            {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
+          {/* File upload */}
+          <div className="space-y-3">
+            <Label className="text-sm font-semibold text-slate-800">
+              Resume File
+            </Label>
+
+            <label className="block cursor-pointer rounded-[1.5rem] border-2 border-dashed border-green-200 bg-green-50/40 p-8 transition hover:border-green-400 hover:bg-green-50">
+              <div className="flex flex-col items-center justify-center text-center">
+                <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-white text-green-600 shadow-sm">
+                  <Upload className="h-8 w-8" />
+                </div>
+
+                <p className="text-base font-semibold text-slate-800">
+                  {file ? file.name : "Click to upload resume"}
+                </p>
+                <p className="mt-2 text-sm text-slate-500">
+                  Upload PDF, DOC, or DOCX resume file
+                </p>
+              </div>
+
+              <input
+                type="file"
+                className="hidden"
+                onChange={(e) => setFile(e.target.files?.[0] || null)}
+              />
+            </label>
           </div>
-        </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="experience">Experience (years)</Label>
-          <Input id="experience" type="number" min="0" value={experience} onChange={e => setExperience(e.target.value)} placeholder="e.g. 3" />
-          {errors.experience && <p className="text-sm text-destructive">{errors.experience}</p>}
-        </div>
-
-        <div className="space-y-2">
-          <Label>Resume File</Label>
-          <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-border rounded-xl cursor-pointer hover:border-primary/50 transition-colors bg-muted/30">
-            <Upload className="w-8 h-8 text-muted-foreground mb-2" />
-            <span className="text-sm text-muted-foreground">{file ? file.name : "Click to upload or drag & drop"}</span>
-            <input type="file" className="hidden" accept=".pdf,.doc,.docx" onChange={e => setFile(e.target.files?.[0] || null)} />
-          </label>
-          {errors.file && <p className="text-sm text-destructive">{errors.file}</p>}
-        </div>
-
-        <Button type="submit" className="w-full sm:w-auto h-11 px-8">Submit Resume</Button>
-      </form>
+          {/* Button */}
+          <div className="flex justify-end">
+            <Button
+              type="submit"
+              className="h-12 rounded-xl bg-[#16a34a] px-8 text-base font-semibold hover:bg-[#15803d]"
+            >
+              Upload Resume
+            </Button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
 
 export default UploadResume;
+
