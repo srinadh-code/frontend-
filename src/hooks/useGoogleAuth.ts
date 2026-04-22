@@ -202,7 +202,7 @@
 
 
 import { useCallback } from "react";
-import { API } from "@/services/api";
+import API from "@/services/api";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 
