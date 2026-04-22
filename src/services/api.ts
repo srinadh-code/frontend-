@@ -118,6 +118,7 @@
 
 import axios, { AxiosRequestHeaders } from "axios";
 
+// ✅ Create API instance
 const API = axios.create({
   baseURL: "https://resume-project-b.onrender.com/api/",
   headers: {
@@ -125,6 +126,7 @@ const API = axios.create({
   },
 });
 
+// 🔐 Attach JWT token automatically
 API.interceptors.request.use((config) => {
   const token =
     localStorage.getItem("access_token") ||

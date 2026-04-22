@@ -159,6 +159,7 @@ const AuthContext = createContext<any>(null);
 
 export const AuthProvider = ({ children }: any) => {
 
+  // ✅ SIGNUP
   const signup = async (username: string, email: string, password: string) => {
     try {
       const res = await API.post("signup/", {
@@ -168,10 +169,12 @@ export const AuthProvider = ({ children }: any) => {
       });
       return res.data;
     } catch (err: any) {
+      console.error("Signup error:", err.response?.data || err.message);
       throw err.response?.data || err.message;
     }
   };
 
+  // ✅ LOGIN
   const login = async (username: string, password: string) => {
     try {
       const res = await API.post("login/", {
@@ -179,25 +182,30 @@ export const AuthProvider = ({ children }: any) => {
         password,
       });
 
+      // 🔐 Store token
       localStorage.setItem("token", res.data.access);
       localStorage.setItem("is_admin", res.data.is_admin);
 
       return res.data;
     } catch (err: any) {
+      console.error("Login error:", err.response?.data || err.message);
       throw err.response?.data || err.message;
     }
   };
 
+  // ✅ LOGOUT
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("is_admin");
   };
 
+  // ✅ GET PROFILE
   const getProfile = async () => {
     try {
       const res = await API.get("profile/");
       return res.data;
     } catch (err: any) {
+      console.error("Profile error:", err.response?.data || err.message);
       throw err.response?.data || err.message;
     }
   };
@@ -209,4 +217,5 @@ export const AuthProvider = ({ children }: any) => {
   );
 };
 
+// ✅ Hook
 export const useAuth = () => useContext(AuthContext);
