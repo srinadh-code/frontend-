@@ -72,8 +72,8 @@ const UploadResume = () => {
       formData.append("email", email);
       formData.append("skills", skills || "Not provided");
       formData.append("experience", String(experience));
-      formData.append("file", file);
-
+      // formData.append("file", file);
+      formData.append("resume_file", file); 
       await API.post("resumes/upload/", formData);
 
       setSubmitted(true);
