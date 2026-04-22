@@ -48,7 +48,7 @@
 
 
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
-import { loginApi, API } from "@/services/api";
+import API from "@/services/api";
 
 interface UserType {
   username: string;
