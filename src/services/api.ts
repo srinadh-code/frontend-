@@ -79,35 +79,64 @@
 
 
 
+// import axios, { AxiosRequestHeaders } from "axios";
+
+// // 🔐 Login API (no token needed here)
+// const loginApi = axios.create({
+//   // baseURL: "http://127.0.0.1:8000/api/",
+//   baseURL:"https://resume-project-b.onrender.com",
+//   withCredentials:false,
+// });
+
+// // 🔐 Main API (with token)
+// const API = axios.create({
+//   // baseURL: "http://127.0.0.1:8000/api/",
+//    baseURL:"https://resume-project-b.onrender.com",
+//   withCredentials: false,
+// });
+
+// // 🔑 Attach JWT automatically
+// API.interceptors.request.use((config) => {
+//   const accessToken =
+//     localStorage.getItem("access_token") ||
+//     localStorage.getItem("token") ||
+//     localStorage.getItem("access");
+
+//   if (accessToken) {
+//     config.headers = (config.headers || {}) as AxiosRequestHeaders;
+//     config.headers.Authorization = `Bearer ${accessToken}`;
+//   }
+
+//   return config;
+// });
+
+// export { API, loginApi };
+
+
+
+
+
 import axios, { AxiosRequestHeaders } from "axios";
 
-// 🔐 Login API (no token needed here)
-const loginApi = axios.create({
-  // baseURL: "http://127.0.0.1:8000/api/",
-  baseURL:"https://resume-project-b.onrender.com",
-  withCredentials:false,
-});
-
-// 🔐 Main API (with token)
 const API = axios.create({
-  // baseURL: "http://127.0.0.1:8000/api/",
-   baseURL:"https://resume-project-b.onrender.com",
-  withCredentials: false,
+  baseURL: "https://resume-project-b.onrender.com/api/",
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
-// 🔑 Attach JWT automatically
 API.interceptors.request.use((config) => {
-  const accessToken =
+  const token =
     localStorage.getItem("access_token") ||
     localStorage.getItem("token") ||
     localStorage.getItem("access");
 
-  if (accessToken) {
+  if (token) {
     config.headers = (config.headers || {}) as AxiosRequestHeaders;
-    config.headers.Authorization = `Bearer ${accessToken}`;
+    config.headers.Authorization = `Bearer ${token}`;
   }
 
   return config;
 });
 
-export { API, loginApi };
+export default API;
