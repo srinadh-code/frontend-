@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { API } from "@/services/api";
+import API from "@/services/api";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
