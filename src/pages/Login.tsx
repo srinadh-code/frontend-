@@ -40,25 +40,40 @@ const Login = () => {
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!validate()) return;
+  e.preventDefault();
 
-    try {
-      await login(username, password);
+  if (!validate()) return;
 
-      toast({
-        title: "Welcome back!",
-        description: "You have logged in successfully.",
-      });
+  try {
+    await login(username, password);
 
+    // ✅ SUCCESS MESSAGE
+    toast({
+      title: "Login Successful",
+      description: "Redirecting to dashboard...",
+    });
+
+    // ⏳ WAIT 1.5 sec
+    setTimeout(() => {
       navigate("/dashboard");
-    } catch (err) {
-      toast({
-        title: "Login failed",
-        description: "Invalid credentials",
-      });
+    }, 1500);
+
+  } catch (err: any) {
+    console.error("Login Error:", err);
+
+    let message = "Invalid credentials";
+
+    if (err.response?.data?.detail) {
+      message = err.response.data.detail;
     }
-  };
+
+    // ❌ ERROR MESSAGE
+    toast({
+      title: "Login Failed",
+      description: message,
+    });
+  }
+};
 
   return (
     <div className="min-h-screen bg-[#f6f8f7] flex flex-col">

@@ -52,41 +52,45 @@ const Signup = () => {
   };
 
   const handleSubmit = async (ev: React.FormEvent) => {
-    ev.preventDefault();
+  ev.preventDefault();
 
-    if (!validate()) return;
+  if (!validate()) return;
 
-    try {
-      const res = await signup(username, email, password);
-      console.log("Signup Response:", res);
+  try {
+    await signup(username, email, password);
 
-      toast({
-        title: "Account created!",
-        description: "Welcome to ResumeHub.",
-      });
+    // ✅ SUCCESS MESSAGE
+    toast({
+      title: "Account created!",
+      description: "Please login with your credentials.",
+    });
 
+    // ⏳ WAIT THEN REDIRECT
+    setTimeout(() => {
       navigate("/login");
-    } catch (err: any) {
-      console.error("Signup Error:", err);
+    }, 2000);
 
-      let message = "Signup failed. Try again.";
+  } catch (err: any) {
+    console.error("Signup Error:", err);
 
-      if (err.response?.data) {
-        const data = err.response.data;
+    let message = "Signup failed. Try again.";
 
-        if (data.username) message = data.username[0];
-        else if (data.email) message = data.email[0];
-        else if (data.password) message = data.password[0];
-        else if (data.detail) message = data.detail;
-      }
+    if (err.response?.data) {
+      const data = err.response.data;
 
-      toast({
-        title: "Error",
-        description: message,
-        variant: "destructive",
-      });
+      if (data.username) message = data.username[0];
+      else if (data.email) message = data.email[0];
+      else if (data.password) message = data.password[0];
+      else if (data.detail) message = data.detail;
     }
-  };
+
+    // ❌ ERROR MESSAGE
+    toast({
+      title: "Error",
+      description: message,
+    });
+  }
+};
 
   return (
     <div className="min-h-screen bg-[#f6f8f7] flex flex-col">
