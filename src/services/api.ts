@@ -1,117 +1,3 @@
-// import axios from "axios";
-
-// const loginApi = axios.create({
-
-//   baseURL: "http://127.0.0.1:8000/api/",
-//   headers: {
-//     "Content-Type": "application/json",
-//   },
-//   withCredentials: true,  
-// })
-
-// const API = axios.create({
-//   baseURL: "http://127.0.0.1:8000/api/",
-//   headers: {
-//     "Content-Type": "application/json",
-//   },
-//   withCredentials: true,
-// });
-
-// API.interceptors.request.use((config) => {
-//   const accessToken =
-//     localStorage.getItem("access_token") ||
-//     localStorage.getItem("token") ||
-//     localStorage.getItem("access");
-
-//   if (accessToken) {
-//     if (!config.headers) {
-//       config.headers = {} as any;
-//     }
-//     (config.headers as any).Authorization = `Bearer ${accessToken}`;
-//   }
-
-//   return config;
-// });
-
-
-
-// export { API, loginApi };
-
-
-
-// import axios, { AxiosRequestHeaders } from "axios";
-
-// // 🔐 Login API (for auth only)
-// const loginApi = axios.create({
-//   baseURL: "http://127.0.0.1:8000/api/",
-//   withCredentials: true,
-// });
-
-// // 🔐 Main API
-// const API = axios.create({
-//   baseURL: "http://127.0.0.1:8000/api/",
-//   withCredentials: true,
-// });
-
-// // 🔑 Attach JWT token automatically
-// API.interceptors.request.use((config) => {
-//   const accessToken =
-//     localStorage.getItem("access_token") ||
-//     localStorage.getItem("token") ||
-//     localStorage.getItem("access");
-
-//   if (accessToken) {
-//     // ✅ Fix TypeScript issue
-//     config.headers = (config.headers || {}) as AxiosRequestHeaders;
-
-//     config.headers.Authorization = `Bearer ${accessToken}`;
-//   }
-
-//   return config;
-// });
-
-// export { API, loginApi };
-
-
-
-
-
-
-
-
-// import axios, { AxiosRequestHeaders } from "axios";
-
-// // 🔐 Login API (no token needed here)
-// const loginApi = axios.create({
-//   // baseURL: "http://127.0.0.1:8000/api/",
-//   baseURL:"https://resume-project-b.onrender.com",
-//   withCredentials:false,
-// });
-
-// // 🔐 Main API (with token)
-// const API = axios.create({
-//   // baseURL: "http://127.0.0.1:8000/api/",
-//    baseURL:"https://resume-project-b.onrender.com",
-//   withCredentials: false,
-// });
-
-// // 🔑 Attach JWT automatically
-// API.interceptors.request.use((config) => {
-//   const accessToken =
-//     localStorage.getItem("access_token") ||
-//     localStorage.getItem("token") ||
-//     localStorage.getItem("access");
-
-//   if (accessToken) {
-//     config.headers = (config.headers || {}) as AxiosRequestHeaders;
-//     config.headers.Authorization = `Bearer ${accessToken}`;
-//   }
-
-//   return config;
-// });
-
-// export { API, loginApi };
-
 
 
 
@@ -126,14 +12,19 @@
 //   },
 // });
 
-// // 🔐 Attach JWT token automatically
+// // 🔐 Attach JWT token (ONLY for protected APIs)
 // API.interceptors.request.use((config) => {
 //   const token =
 //     localStorage.getItem("access_token") ||
 //     localStorage.getItem("token") ||
 //     localStorage.getItem("access");
 
-//   if (token) {
+//   // 🚨 IMPORTANT FIX
+//   if (
+//     token &&
+//     !config.url?.includes("signup") &&
+//     !config.url?.includes("login")
+//   ) {
 //     config.headers = (config.headers || {}) as AxiosRequestHeaders;
 //     config.headers.Authorization = `Bearer ${token}`;
 //   }
@@ -151,19 +42,16 @@ import axios, { AxiosRequestHeaders } from "axios";
 // ✅ Create API instance
 const API = axios.create({
   baseURL: "https://resume-project-b.onrender.com/api/",
-  headers: {
-    "Content-Type": "application/json",
-  },
+  // ❌ REMOVE Content-Type
 });
 
-// 🔐 Attach JWT token (ONLY for protected APIs)
+// 🔐 Attach JWT token
 API.interceptors.request.use((config) => {
   const token =
     localStorage.getItem("access_token") ||
     localStorage.getItem("token") ||
     localStorage.getItem("access");
 
-  // 🚨 IMPORTANT FIX
   if (
     token &&
     !config.url?.includes("signup") &&
