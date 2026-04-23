@@ -68,7 +68,7 @@ const Signup = () => {
     // ⏳ WAIT THEN REDIRECT
     setTimeout(() => {
       navigate("/login");
-    }, 2000);
+    }, 1000);
 
   } catch (err: any) {
     console.error("Signup Error:", err);
