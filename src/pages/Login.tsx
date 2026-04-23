@@ -47,20 +47,25 @@ const Login = () => {
   try {
     const res = await login(username, password);
 
-const isAdmin = res.is_admin ?? false;
-
+// const isAdmin = res.is_admin ?? false;
+const isAdmin = res.is_admin;
 toast({
   title: "Login Successful",
   description: "Redirecting...",
 });
 
-setTimeout(() => {
-  if (isAdmin) {
-    navigate("/dashboard", { replace: true });
-  } else {
-    navigate("/upload", { replace: true });
-  }
-}, 1000);
+// setTimeout(() => {
+//   if (isAdmin) {
+//     navigate("/dashboard", { replace: true });
+//   } else {
+//     navigate("/upload", { replace: true });
+//   }
+// }, 1000);
+if (isAdmin) {
+  navigate("/dashboard", { replace: true });
+} else {
+  navigate("/upload", { replace: true });
+}
 
   } catch (err: any) {
     console.error("Login Error:", err);

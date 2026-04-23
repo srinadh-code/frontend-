@@ -66,9 +66,10 @@ const Signup = () => {
     });
 
     // ⏳ WAIT THEN REDIRECT
-    setTimeout(() => {
-      navigate("/login");
-    }, 1000);
+    // setTimeout(() => {
+    //   navigate("/login");
+    // }, 1000);
+    navigate("/login");
 
   } catch (err: any) {
     console.error("Signup Error:", err);

@@ -218,7 +218,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     });
 
     // optional: auto login
-    await login(username, password);
+    // await login(username, password);
   };
 
   // ✅ LOGOUT
