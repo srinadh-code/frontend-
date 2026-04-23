@@ -30,7 +30,7 @@ const Login = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
-
+const [loading, setLoading] = useState(false);
   const validate = () => {
     const e: Record<string, string> = {};
     if (!username.trim()) e.username = "Username or email is required";
@@ -38,38 +38,26 @@ const Login = () => {
     setErrors(e);
     return Object.keys(e).length === 0;
   };
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
   e.preventDefault();
 
   if (!validate()) return;
 
+  setLoading(true); // ✅ START LOADING
+
   try {
     const res = await login(username, password);
 
-// const isAdmin = res.is_admin ?? false;
-const isAdmin = res.is_admin;
-toast({
-  title: "Login Successful",
-  description: "Redirecting...",
-});
+    const isAdmin = res.is_admin;
 
-// setTimeout(() => {
-//   if (isAdmin) {
-//     navigate("/dashboard", { replace: true });
-//   } else {
-//     navigate("/upload", { replace: true });
-//   }
-// }, 1000);
-if (isAdmin) {
-  navigate("/dashboard", { replace: true });
-} else {
-  navigate("/upload", { replace: true });
-}
+    // 🚀 INSTANT REDIRECT
+    if (isAdmin) {
+      navigate("/dashboard", { replace: true });
+    } else {
+      navigate("/upload", { replace: true });
+    }
 
   } catch (err: any) {
-    console.error("Login Error:", err);
-
     let message = "Invalid credentials";
 
     if (err.response?.data?.detail) {
@@ -80,8 +68,47 @@ if (isAdmin) {
       title: "Login Failed",
       description: message,
     });
+
+    setLoading(false); // ❌ only stop on error
   }
 };
+
+//   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+//   e.preventDefault();
+
+//   if (!validate()) return;
+
+//   try {
+//     const res = await login(username, password);
+
+
+// const isAdmin = res.is_admin;
+// toast({
+//   title: "Login Successful",
+// });
+
+
+// if (isAdmin) {
+//   navigate("/dashboard", { replace: true });
+// } else {
+//   navigate("/upload", { replace: true });
+// }
+
+//   } catch (err: any) {
+//     console.error("Login Error:", err);
+
+//     let message = "Invalid credentials";
+
+//     if (err.response?.data?.detail) {
+//       message = err.response.data.detail;
+//     }
+
+//     toast({
+//       title: "Login Failed",
+//       description: message,
+//     });
+//   }
+// };
 
   return (
     <div className="min-h-screen bg-[#f6f8f7] flex flex-col">
@@ -311,13 +338,9 @@ if (isAdmin) {
                     </Link>
                   </div>
 
-                  <Button
-                    type="submit"
-                    className="h-14 w-full rounded-xl bg-[#16a34a] text-lg font-semibold text-white hover:bg-[#15803d]"
-                  >
-                    <span>Sign In</span>
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </Button>
+                  <Button type="submit" disabled={loading}>
+  {loading ? "Signing in..." : "Sign In"}
+</Button>
                 </form>
 
                 {/* Divider */}

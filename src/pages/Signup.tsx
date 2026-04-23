@@ -34,6 +34,7 @@ const Signup = () => {
   const { signup } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [loading, setLoading] = useState(false);
 
   const validate = () => {
     const e: Record<string, string> = {};
@@ -51,25 +52,26 @@ const Signup = () => {
     return Object.keys(e).length === 0;
   };
 
-  const handleSubmit = async (ev: React.FormEvent) => {
+
+
+const handleSubmit = async (ev: React.FormEvent) => {
   ev.preventDefault();
 
   if (!validate()) return;
 
+  setLoading(true); // 🔥 start loading
+
   try {
     await signup(username, email, password);
 
-    // ✅ SUCCESS MESSAGE
+    // ✅ success toast
     toast({
       title: "Account created!",
-      description: "Please login with your credentials.",
+      description: "Please login to continue",
     });
 
-    // ⏳ WAIT THEN REDIRECT
-    // setTimeout(() => {
-    //   navigate("/login");
-    // }, 1000);
-    navigate("/login");
+    // 🚀 instant redirect (no delay)
+    navigate("/login", { replace: true });
 
   } catch (err: any) {
     console.error("Signup Error:", err);
@@ -85,11 +87,12 @@ const Signup = () => {
       else if (data.detail) message = data.detail;
     }
 
-    // ❌ ERROR MESSAGE
     toast({
       title: "Error",
       description: message,
     });
+
+    setLoading(false); // ❌ stop loading only on error
   }
 };
 
@@ -283,13 +286,9 @@ const Signup = () => {
                     {errors.password && <p className="text-sm text-red-500">{errors.password}</p>}
                   </div>
 
-                  <Button
-                    type="submit"
-                    className="h-14 w-full rounded-xl bg-[#16a34a] text-lg font-semibold text-white hover:bg-[#15803d]"
-                  >
-                    <span>Create Account</span>
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </Button>
+                  <Button type="submit" disabled={loading}>
+  {loading ? "Creating..." : "Create Account"}
+</Button>
                 </form>
 
                 <div className="relative my-8">
