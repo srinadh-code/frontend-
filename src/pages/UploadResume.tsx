@@ -55,37 +55,54 @@ const UploadResume = () => {
     : [];
 
   const handleSubmit = async (e: any) => {
-    e.preventDefault();
-    setErrorMessage("");
+  e.preventDefault();
+  setErrorMessage("");
 
-    if (!file) {
-      setErrorMessage("Please upload a file");
-      return;
-    }
+  // ✅ VALIDATIONS FIRST
+  if (!file) {
+    setErrorMessage("Please upload a file");
+    return;
+  }
 
-    try {
-      const formData = new FormData();
+  if (!departmentId || !subdepartmentId) {
+    setErrorMessage("Select department and subdepartment");
+    return;
+  }
 
-      formData.append("department", String(departmentId));
-      formData.append("subdepartment", String(subdepartmentId));
-      formData.append("name", name);
-      formData.append("email", email);
-      formData.append("skills", skills || "Not provided");
-      formData.append("experience", String(experience));
-      // formData.append("file", file);
-      formData.append("resume_file", file); 
-      await API.post("resumes/upload/", formData);
+  if (!name || !email) {
+    setErrorMessage("Name and email are required");
+    return;
+  }
 
-      setSubmitted(true);
-    } catch (err: any) {
-      console.error(err);
-      setErrorMessage(
-        err?.response?.data?.error ||
-          JSON.stringify(err?.response?.data) ||
-          "Upload failed"
-      );
-    }
-  };
+  try {
+    const formData = new FormData();
+
+    formData.append("department", String(departmentId));
+    formData.append("subdepartment", String(subdepartmentId));
+    formData.append("name", name);
+    formData.append("email", email);
+    formData.append("skills", skills || "Not provided");
+    formData.append("experience", String(experience));
+    formData.append("file", file); // ✅ IMPORTANT
+
+    // ✅ API CALL
+    await API.post("resumes/upload/", formData);
+
+    setSubmitted(true);
+
+  } catch (err: any) {
+    console.error("UPLOAD ERROR:", err.response?.data);
+
+    setErrorMessage(
+      err?.response?.data?.file?.[0] ||   // file error
+      err?.response?.data?.department?.[0] ||
+      err?.response?.data?.subdepartment?.[0] ||
+      err?.response?.data?.detail ||
+      JSON.stringify(err?.response?.data) ||
+      "Upload failed"
+    );
+  }
+};
 
   if (submitted) {
     return (
