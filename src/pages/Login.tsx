@@ -45,18 +45,22 @@ const Login = () => {
   if (!validate()) return;
 
   try {
-    await login(username, password);
+    const res = await login(username, password);
 
-    // ✅ SUCCESS MESSAGE
-    toast({
-      title: "Login Successful",
-      description: "Redirecting to dashboard...",
-    });
+const isAdmin = res.is_admin ?? false;
 
-    // ⏳ WAIT 1.5 sec
-    setTimeout(() => {
-      navigate("/dashboard");
-    }, 1000);
+toast({
+  title: "Login Successful",
+  description: "Redirecting...",
+});
+
+setTimeout(() => {
+  if (isAdmin) {
+    navigate("/dashboard", { replace: true });
+  } else {
+    navigate("/upload", { replace: true });
+  }
+}, 1000);
 
   } catch (err: any) {
     console.error("Login Error:", err);
@@ -67,7 +71,6 @@ const Login = () => {
       message = err.response.data.detail;
     }
 
-    // ❌ ERROR MESSAGE
     toast({
       title: "Login Failed",
       description: message,
