@@ -286,8 +286,12 @@ const handleSubmit = async (ev: React.FormEvent) => {
                     {errors.password && <p className="text-sm text-red-500">{errors.password}</p>}
                   </div>
 
-                  <Button type="submit" disabled={loading}>
-  {loading ? "Creating..." : "Create Account"}
+                  <Button
+  type="submit"
+  disabled={loading}
+  className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg"
+>
+  {loading ? "Signing in..." : "Sign In"}
 </Button>
                 </form>
 
