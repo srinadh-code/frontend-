@@ -343,9 +343,8 @@ const [loading, setLoading] = useState(false);
   disabled={loading}
   className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg"
 >
-  {loading ? "Creating..." : "Create Account"}
-</Button>
-                </form>
+  {loading ? "Signing in..." : "Sign In"}
+</Button>        </form>
 
                 {/* Divider */}
                 <div className="relative my-8">

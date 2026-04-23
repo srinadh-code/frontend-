@@ -291,7 +291,7 @@ const handleSubmit = async (ev: React.FormEvent) => {
   disabled={loading}
   className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg"
 >
-  {loading ? "Signing in..." : "Sign In"}
+  {loading ? "Creating..." : "Create Account"}
 </Button>
                 </form>
 
