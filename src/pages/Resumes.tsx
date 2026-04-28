@@ -19,30 +19,31 @@ interface ResumeRow {
   skills: string;
   experience: number;
   file: string;
+  file_url: string;
   uploaded_at: string;
   is_bookmarked: boolean;
 }
 
-const fixFileUrl = (url: string) => {
-  const BASE = import.meta.env.VITE_BACKEND_URL || "https://resume-project-b.onrender.com";
+// const fixFileUrl = (url: string) => {
+//   const BASE = import.meta.env.VITE_BACKEND_URL || "https://resume-project-b.onrender.com";
 
-  if (!url) return "";
+//   if (!url) return "";
 
-  // If already correct backend URL
-  if (url.startsWith(BASE)) return url;
+//   // If already correct backend URL
+//   if (url.startsWith(BASE)) return url;
 
-  // If localhost stored in DB
-  if (url.includes("127.0.0.1")) {
-    return url.replace("http://127.0.0.1:8000", BASE);
-  }
+//   // If localhost stored in DB
+//   if (url.includes("127.0.0.1")) {
+//     return url.replace("http://127.0.0.1:8000", BASE);
+//   }
 
-  // If relative path
-  if (url.startsWith("/")) {
-    return BASE + url;
-  }
+//   // If relative path
+//   if (url.startsWith("/")) {
+//     return BASE + url;
+//   }
 
-  return `${BASE}/${url}`;
-};
+//   return `${BASE}/${url}`;
+// };
 const Resumes = () => {
   const [resumes, setResumes] = useState<ResumeRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -276,14 +277,14 @@ const downloadResume = (url: string) => {
                 <TableCell>{r.skills}</TableCell>
 
                 <TableCell className="flex gap-2">
-                 <Button size="icon" variant="ghost" onClick={() => viewResume(r.file)}>
+                 <Button size="icon" variant="ghost" onClick={() => viewResume(r.file_url)}>
   <Eye className="w-4 h-4" />
 </Button>
 
 <Button
   size="icon"
   variant="ghost"
-  onClick={() => downloadResume(r.file)}
+  onClick={() => downloadResume(r.file_url)}
 >
   <Download className="w-4 h-4" />
 </Button>
