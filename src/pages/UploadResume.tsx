@@ -54,10 +54,11 @@ const UploadResume = () => {
     ? subdepartments.filter((s) => s.department === departmentId)
     : [];
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: any) => {
   e.preventDefault();
   setErrorMessage("");
 
+  //  VALIDATIONS FIRST
   if (!file) {
     setErrorMessage("Please upload a file");
     return;
@@ -74,13 +75,6 @@ const UploadResume = () => {
   }
 
   try {
-    const token = localStorage.getItem("access");
-
-    if (!token) {
-      setErrorMessage("User not authenticated");
-      return;
-    }
-
     const formData = new FormData();
 
     formData.append("department", String(departmentId));
@@ -89,22 +83,21 @@ const UploadResume = () => {
     formData.append("email", email);
     formData.append("skills", skills || "Not provided");
     formData.append("experience", String(experience));
-    formData.append("file", file); // ✅ IMPORTANT
+    formData.append("file", file); //  IMPORTANT
 
-    // ✅ ONLY ONE API CALL
-    await API.post("resumes/upload/", formData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    //  API CALL
+    await API.post("resumes/upload/", formData);
+    
 
     setSubmitted(true);
 
-  } catch (err) {
-    console.error("UPLOAD ERROR:", err?.response?.data);
+  } catch (err: any) {
+    console.error("UPLOAD ERROR:", err.response?.data);
 
     setErrorMessage(
-      err?.response?.data?.file?.[0] ||
+      err?.response?.data?.file?.[0] ||   // file error
+      err?.response?.data?.department?.[0] ||
+      err?.response?.data?.subdepartment?.[0] ||
       err?.response?.data?.detail ||
       JSON.stringify(err?.response?.data) ||
       "Upload failed"
