@@ -167,17 +167,13 @@ const Resumes = () => {
   //   const backend = import.meta.env.VITE_BACKEND_URL || "http://127.0.0.1:8000";
   //   window.open(`${backend}/api/resumes/download/${id}/`, "_blank");
   // };
-const downloadResume = (id: number) => {
-  const BASE = import.meta.env.VITE_BACKEND_URL;
-
-  window.open(`${BASE}/api/resumes/download/${id}/`, "_blank");
-};
-const viewResume = (id: number) => {
-  const BASE = import.meta.env.VITE_BACKEND_URL;
-
-  window.open(`${BASE}/api/resumes/download/${id}/`, "_blank");
+const viewResume = (url: string) => {
+  window.open(url, "_blank");
 };
 
+const downloadResume = (url: string) => {
+  window.open(url);
+};
   const deleteResume = async (id: number) => {
     const confirmDelete = window.confirm("Are you sure you want to delete?");
     if (!confirmDelete) return;
@@ -274,14 +270,14 @@ const viewResume = (id: number) => {
                 <TableCell>{r.skills}</TableCell>
 
                 <TableCell className="flex gap-2">
-                 <Button size="icon" variant="ghost" onClick={() => viewResume(r.id)}>
+                 <Button size="icon" variant="ghost" onClick={() => viewResume(r.file)}>
   <Eye className="w-4 h-4" />
 </Button>
 
 <Button
   size="icon"
   variant="ghost"
-  onClick={() => downloadResume(r.id)}
+  onClick={() => downloadResume(r.file)}
 >
   <Download className="w-4 h-4" />
 </Button>
