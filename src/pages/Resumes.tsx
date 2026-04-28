@@ -174,10 +174,7 @@ const Resumes = () => {
 };
 
 const downloadResume = (url: string) => {
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = "resume.pdf";
-  link.click();
+  window.open(url, "_blank");   // ✅ THIS FIXES IT
 };
 
 
