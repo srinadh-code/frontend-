@@ -23,6 +23,17 @@ interface ResumeRow {
   is_bookmarked: boolean;
 }
 
+const fixFileUrl = (url: string) => {
+  const BASE = import.meta.env.VITE_BACKEND_URL;
+
+  if (!url) return "";
+
+  // Replace localhost with deployed backend
+  return url.includes("127.0.0.1")
+    ? url.replace("http://127.0.0.1:8000", BASE)
+    : url;
+};
+
 const Resumes = () => {
   const [resumes, setResumes] = useState<ResumeRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -147,29 +158,50 @@ const Resumes = () => {
   //   const backend = import.meta.env.VITE_BACKEND_URL || "http://127.0.0.1:8000";
   //   window.open(`${backend}/api/resumes/download/${id}/`, "_blank");
   // };
+const downloadResume = async (fileUrl: string, id: number) => {
+  try {
+    const fixedUrl = fixFileUrl(fileUrl);
 
-  // const viewResume = (fileUrl: string) => {
-  //   const backend = import.meta.env.VITE_BACKEND_URL || "http://127.0.0.1:8000";
-  //   const fullUrl = fileUrl.startsWith("http") ? fileUrl : `${backend}${fileUrl}`;
-  //   window.open(fullUrl, "_blank");
-  // };
-const downloadResume = (id: number) => {
-  const BASE = import.meta.env.VITE_BACKEND_URL;
-  window.open(`${BASE}/api/resumes/download/${id}/`, "_blank");
+    const response = await fetch(fixedUrl, {
+      headers: {
+        Authorization: `Bearer ${
+          localStorage.getItem("access_token") ||
+          localStorage.getItem("token") ||
+          localStorage.getItem("access")
+        }`,
+      },
+    });
+
+    if (!response.ok) throw new Error("Download failed");
+
+    const blob = await response.blob();
+
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `resume_${id}.pdf`;
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    window.URL.revokeObjectURL(url);
+  } catch (err) {
+    console.error(err);
+    alert("Download failed");
+  }
 };
 
-  const viewResume = (fileUrl: string) => {
-  if (!fileUrl) return;
+const viewResume = (fileUrl: string) => {
+  const fixedUrl = fixFileUrl(fileUrl);
 
-  const BASE = import.meta.env.VITE_BACKEND_URL;
-
-  const fixedUrl = fileUrl.includes("127.0.0.1")
-    ? fileUrl.replace("http://127.0.0.1:8000", BASE)
-    : fileUrl;
+  if (!fixedUrl) {
+    alert("File not found");
+    return;
+  }
 
   window.open(fixedUrl, "_blank");
 };
-
   const deleteResume = async (id: number) => {
     const confirmDelete = window.confirm("Are you sure you want to delete?");
     if (!confirmDelete) return;
@@ -270,9 +302,13 @@ const downloadResume = (id: number) => {
                     <Eye className="w-4 h-4" />
                   </Button>
 
-                  <Button size="icon" variant="ghost" onClick={() => downloadResume(r.id)}>
-                    <Download className="w-4 h-4" />
-                  </Button>
+                  <Button
+  size="icon"
+  variant="ghost"
+  onClick={() => downloadResume(r.file, r.id)}
+>
+  <Download className="w-4 h-4" />
+</Button>
 
                   <Button
                     size="icon"
