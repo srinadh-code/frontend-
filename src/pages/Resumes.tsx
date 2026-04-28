@@ -169,15 +169,15 @@ const Resumes = () => {
   // };
 
   const viewResume = (url: string) => {
-  const fixed = fixFileUrl(url);
-  window.open(fixed, "_blank");
+  window.open(url, "_blank");
 };
 
 const downloadResume = (url: string) => {
-  const fixed = fixFileUrl(url);
-  window.open(fixed);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "resume.pdf";
+  link.click();
 };
-
 
 
   const deleteResume = async (id: number) => {
@@ -276,14 +276,14 @@ const downloadResume = (url: string) => {
                 <TableCell>{r.skills}</TableCell>
 
                 <TableCell className="flex gap-2">
-                 <Button size="icon" variant="ghost" onClick={() => viewResume(fixFileUrl(r.file))}>
+                 <Button size="icon" variant="ghost" onClick={() => viewResume(r.file)}>
   <Eye className="w-4 h-4" />
 </Button>
 
 <Button
   size="icon"
   variant="ghost"
-  onClick={() => downloadResume(fixFileUrl(r.file))}
+  onClick={() => downloadResume(r.file)}
 >
   <Download className="w-4 h-4" />
 </Button>
