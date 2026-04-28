@@ -24,16 +24,25 @@ interface ResumeRow {
 }
 
 const fixFileUrl = (url: string) => {
-  const BASE = import.meta.env.VITE_BACKEND_URL;
+  const BASE = import.meta.env.VITE_BACKEND_URL || "https://resume-project-b.onrender.com";
 
   if (!url) return "";
 
-  // Replace localhost with deployed backend
-  return url.includes("127.0.0.1")
-    ? url.replace("http://127.0.0.1:8000", BASE)
-    : url;
-};
+  // If already correct backend URL
+  if (url.startsWith(BASE)) return url;
 
+  // If localhost stored in DB
+  if (url.includes("127.0.0.1")) {
+    return url.replace("http://127.0.0.1:8000", BASE);
+  }
+
+  // If relative path
+  if (url.startsWith("/")) {
+    return BASE + url;
+  }
+
+  return `${BASE}/${url}`;
+};
 const Resumes = () => {
   const [resumes, setResumes] = useState<ResumeRow[]>([]);
   const [loading, setLoading] = useState(true);
