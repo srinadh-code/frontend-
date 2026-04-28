@@ -167,50 +167,17 @@ const Resumes = () => {
   //   const backend = import.meta.env.VITE_BACKEND_URL || "http://127.0.0.1:8000";
   //   window.open(`${backend}/api/resumes/download/${id}/`, "_blank");
   // };
-const downloadResume = async (fileUrl: string, id: number) => {
-  try {
-    const fixedUrl = fixFileUrl(fileUrl);
+const downloadResume = (id: number) => {
+  const BASE = import.meta.env.VITE_BACKEND_URL;
 
-    const response = await fetch(fixedUrl, {
-      headers: {
-        Authorization: `Bearer ${
-          localStorage.getItem("access_token") ||
-          localStorage.getItem("token") ||
-          localStorage.getItem("access")
-        }`,
-      },
-    });
+  window.open(`${BASE}/api/resumes/download/${id}/`, "_blank");
+};
+const viewResume = (id: number) => {
+  const BASE = import.meta.env.VITE_BACKEND_URL;
 
-    if (!response.ok) throw new Error("Download failed");
-
-    const blob = await response.blob();
-
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `resume_${id}.pdf`;
-
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-
-    window.URL.revokeObjectURL(url);
-  } catch (err) {
-    console.error(err);
-    alert("Download failed");
-  }
+  window.open(`${BASE}/api/resumes/download/${id}/`, "_blank");
 };
 
-const viewResume = (fileUrl: string) => {
-  const fixedUrl = fixFileUrl(fileUrl);
-
-  if (!fixedUrl) {
-    alert("File not found");
-    return;
-  }
-
-  window.open(fixedUrl, "_blank");
-};
   const deleteResume = async (id: number) => {
     const confirmDelete = window.confirm("Are you sure you want to delete?");
     if (!confirmDelete) return;
@@ -307,14 +274,14 @@ const viewResume = (fileUrl: string) => {
                 <TableCell>{r.skills}</TableCell>
 
                 <TableCell className="flex gap-2">
-                  <Button size="icon" variant="ghost" onClick={() => viewResume(r.file)}>
-                    <Eye className="w-4 h-4" />
-                  </Button>
+                 <Button size="icon" variant="ghost" onClick={() => viewResume(r.id)}>
+  <Eye className="w-4 h-4" />
+</Button>
 
-                  <Button
+<Button
   size="icon"
   variant="ghost"
-  onClick={() => downloadResume(r.file, r.id)}
+  onClick={() => downloadResume(r.id)}
 >
   <Download className="w-4 h-4" />
 </Button>
