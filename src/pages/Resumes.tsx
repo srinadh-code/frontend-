@@ -173,8 +173,12 @@ const Resumes = () => {
   window.open(url, "_blank");
 };
 
-const downloadResume = (url: string) => {
-  window.open(url, "_blank");   // ✅ THIS FIXES IT
+const downloadResume = (id: number) => {
+  const backend =
+    import.meta.env.VITE_BACKEND_URL ||
+    "https://resume-project-b.onrender.com";
+
+  window.open(`${backend}/resumes/download/${id}/`, "_blank");
 };
 
 
@@ -281,7 +285,7 @@ const downloadResume = (url: string) => {
 <Button
   size="icon"
   variant="ghost"
-  onClick={() => downloadResume(r.file_url)}
+  onClick={() => downloadResume(r.id)}
 >
   <Download className="w-4 h-4" />
 </Button>
