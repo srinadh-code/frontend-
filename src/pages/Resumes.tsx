@@ -178,9 +178,8 @@ const downloadResume = (id: number) => {
     import.meta.env.VITE_BACKEND_URL ||
     "https://resume-project-b.onrender.com";
 
-  window.open(`${backend}/resumes/download/${id}/`, "_blank");
+  window.open(`${backend}/api/resumes/download/${id}/`, "_blank");
 };
-
 
   const deleteResume = async (id: number) => {
     const confirmDelete = window.confirm("Are you sure you want to delete?");
