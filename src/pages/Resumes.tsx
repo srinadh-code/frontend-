@@ -172,7 +172,6 @@ const Resumes = () => {
   const viewResume = (url: string) => {
   window.open(url, "_blank");
 };
-
 const downloadResume = (id: number) => {
   const backend =
     import.meta.env.VITE_BACKEND_URL ||
@@ -180,6 +179,13 @@ const downloadResume = (id: number) => {
 
   window.open(`${backend}/api/resumes/download/${id}/`, "_blank");
 };
+// const downloadResume = (id: number) => {
+//   const backend =
+//     import.meta.env.VITE_BACKEND_URL ||
+//     "https://resume-project-b.onrender.com";
+
+//   window.open(`${backend}/api/resumes/download/${id}/`, "_blank");
+// };
 
   const deleteResume = async (id: number) => {
     const confirmDelete = window.confirm("Are you sure you want to delete?");
