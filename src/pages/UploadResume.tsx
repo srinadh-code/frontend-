@@ -34,8 +34,8 @@ const UploadResume = () => {
   const [file, setFile] = useState<File | null>(null);
 
   const [submitted, setSubmitted] = useState(false);
-  // const [errorMessage, setErrorMessage] = useState("");
-  const [errors, setErrors] = useState<any>({});
+  const [errorMessage, setErrorMessage] = useState("");
+  // const [errors, setErrors] = useState<any>({});
 
   useEffect(() => {
     const fetchData = async () => {
@@ -55,116 +55,116 @@ const UploadResume = () => {
     ? subdepartments.filter((s) => s.department === departmentId)
     : [];
 
-//   const handleSubmit = async (e: any) => {
-//   e.preventDefault();
-//   setErrorMessage("");
+  const handleSubmit = async (e: any) => {
+  e.preventDefault();
+  setErrorMessage("");
 
-//   //  VALIDATIONS FIRST
-//   if (!file) {
-//     setErrorMessage("Please upload a file");
-//     return;
-//   }
+  //  VALIDATIONS FIRST
+  if (!file) {
+    setErrorMessage("Please upload a file");
+    return;
+  }
 
-//   if (!departmentId || !subdepartmentId) {
-//     setErrorMessage("Select department and subdepartment");
-//     return;
-//   }
+  if (!departmentId || !subdepartmentId) {
+    setErrorMessage("Select department and subdepartment");
+    return;
+  }
 
-//   if (!name || !email) {
-//     setErrorMessage("Name and email are required");
-//     return;
-//   }
+  if (!name || !email) {
+    setErrorMessage("Name and email are required");
+    return;
+  }
 
-//   try {
-//     const formData = new FormData();
+  try {
+    const formData = new FormData();
 
-//     formData.append("department", String(departmentId));
-//     formData.append("subdepartment", String(subdepartmentId));
-//     formData.append("name", name);
-//     formData.append("email", email);
-//     formData.append("skills", skills || "Not provided");
-//     formData.append("experience", String(experience));
-//     formData.append("file", file); //  IMPORTANT
+    formData.append("department", String(departmentId));
+    formData.append("subdepartment", String(subdepartmentId));
+    formData.append("name", name);
+    formData.append("email", email);
+    formData.append("skills", skills || "Not provided");
+    formData.append("experience", String(experience));
+    formData.append("file", file); //  IMPORTANT
 
-//     //  API CALL
-//     await API.post("resumes/upload/", formData);
+    //  API CALL
+    await API.post("resumes/upload/", formData);
     
 
-//     setSubmitted(true);
+    setSubmitted(true);
 
-//   } catch (err: any) {
-//     console.error("UPLOAD ERROR:", err.response?.data);
+  } catch (err: any) {
+    console.error("UPLOAD ERROR:", err.response?.data);
 
-//     setErrorMessage(
-//       err?.response?.data?.file?.[0] ||   // file error
-//       err?.response?.data?.department?.[0] ||
-//       err?.response?.data?.subdepartment?.[0] ||
-//       err?.response?.data?.detail ||
-//       JSON.stringify(err?.response?.data) ||
-//       "Upload failed"
-//     );
-//   }
-// };
-
-
-
-const validate = () => {
-    let newErrors: any = {};
-
-    if (!departmentId) newErrors.department = "Department is required";
-    if (!subdepartmentId) newErrors.subdepartment = "Subdepartment is required";
-    if (!name) newErrors.name = "Name is required";
-
-    if (!email) {
-      newErrors.email = "Email is required";
-    } else if (!/^\S+@\S+\.\S+$/.test(email)) {
-      newErrors.email = "Invalid email format";
-    }
-
-    if (!file) newErrors.file = "Resume file is required";
-
-    return newErrors;
-  };
+    setErrorMessage(
+      err?.response?.data?.file?.[0] ||   // file error
+      err?.response?.data?.department?.[0] ||
+      err?.response?.data?.subdepartment?.[0] ||
+      err?.response?.data?.detail ||
+      JSON.stringify(err?.response?.data) ||
+      "Upload failed"
+    );
+  }
+};
 
 
 
-  const handleSubmit = async (e: any) => {
-    e.preventDefault();
+// const validate = () => {
+//     let newErrors: any = {};
 
-    const validationErrors = validate();
-    setErrors(validationErrors);
+//     if (!departmentId) newErrors.department = "Department is required";
+//     if (!subdepartmentId) newErrors.subdepartment = "Subdepartment is required";
+//     if (!name) newErrors.name = "Name is required";
 
-    if (Object.keys(validationErrors).length > 0) return;
+//     if (!email) {
+//       newErrors.email = "Email is required";
+//     } else if (!/^\S+@\S+\.\S+$/.test(email)) {
+//       newErrors.email = "Invalid email format";
+//     }
 
-    try {
-      const formData = new FormData();
+//     if (!file) newErrors.file = "Resume file is required";
 
-      formData.append("department", String(departmentId));
-      formData.append("subdepartment", String(subdepartmentId));
-      formData.append("name", name);
-      formData.append("email", email);
-      formData.append("skills", skills || "Not provided");
-      formData.append("experience", String(experience));
-      formData.append("file", file!);
+//     return newErrors;
+//   };
 
-      await API.post("resumes/upload/", formData);
 
-      setSubmitted(true);
-      setErrors({});
-    } catch (err: any) {
-      const backendErrors = err?.response?.data;
 
-      let newErrors: any = {};
+  // const handleSubmit = async (e: any) => {
+  //   e.preventDefault();
 
-      if (backendErrors?.email) {
-        newErrors.email = "Email already exists";
-      } else if (backendErrors?.error) {
-        newErrors.general = backendErrors.error;
-      }
+  //   const validationErrors = validate();
+  //   setErrors(validationErrors);
 
-      setErrors(newErrors);
-    }
-  };
+  //   if (Object.keys(validationErrors).length > 0) return;
+
+  //   try {
+  //     const formData = new FormData();
+
+      // formData.append("department", String(departmentId));
+      // formData.append("subdepartment", String(subdepartmentId));
+      // formData.append("name", name);
+      // formData.append("email", email);
+      // formData.append("skills", skills || "Not provided");
+      // formData.append("experience", String(experience));
+      // formData.append("file", file!);
+
+      // await API.post("resumes/upload/", formData);
+
+    //   setSubmitted(true);
+    //   setErrors({});
+    // } catch (err: any) {
+    //   const backendErrors = err?.response?.data;
+
+    //   let newErrors: any = {};
+
+    //   if (backendErrors?.email) {
+    //     newErrors.email = "Email already exists";
+    //   } else if (backendErrors?.error) {
+    //     newErrors.general = backendErrors.error;
+  //     }
+
+  //     setErrors(newErrors);
+  //   }
+  // };
 
   if (submitted) {
     return (
