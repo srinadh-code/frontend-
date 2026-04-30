@@ -111,44 +111,25 @@ export default function App() {
   };
 
   const downloadPDF = async () => {
-  if (!resumeRef.current || !libsLoaded) return;
-
-  setIsDownloading(true);
-
-  try {
-    const element = resumeRef.current;
-
-    const opt = {
-      margin: 0,
-      filename: `${form.full_name || "resume"}.pdf`,
-
-      image: { type: "jpeg", quality: 0.95 },
-
-      html2canvas: {
-        scale: 2,
-        useCORS: true
-      },
-
-      jsPDF: {
-        unit: "mm",
-        format: "a4",
-        orientation: "portrait"
-      },
-      
-
-      pagebreak: {
-        mode: ["css", "legacy"]   // 🔥 KEY
-      }
-    };
-
-    await window.html2pdf().set(opt).from(element).save();
-
-  } catch (err) {
-    console.error(err);
-  } finally {
+    if (!resumeRef.current || !libsLoaded) return;
+    setIsDownloading(true);
+    const canvas = await window.html2canvas(resumeRef.current, { scale: 1.5, useCORS: true });
+    const pdf = new window.jspdf.jsPDF('p', 'mm', 'a4');
+    pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, 210, 297);
+    pdf.save(`${form.full_name}_Resume.pdf`);
     setIsDownloading(false);
-  }
-};
+  };
+
+  const renderContent = (content, isPoints) => {
+    if (!isPoints) return content;
+    return (
+      <ul className="list-disc list-inside space-y-1">
+        {content.split('\n').filter(line => line.trim() !== '').map((line, idx) => (
+          <li key={idx}>{line.replace(/^[•\-\*]\s*/, '')}</li>
+        ))}
+      </ul>
+    );
+  };
 
   return (
     <div className="flex h-screen bg-slate-100 overflow-hidden text-slate-900 font-sans">
@@ -324,7 +305,7 @@ export default function App() {
 
       {/* LIVE PREVIEW */}
       <div className="flex-1 overflow-y-auto p-12 bg-slate-300 flex justify-center">
-        <div ref={resumeRef} className="w-[210mm] bg-white shadow-2xl flex">
+        <div ref={resumeRef} className="w-[210mm] min-h-[297mm] h-fit bg-white shadow-2xl flex">
           
           {/* Sidebar */}
           <div className="w-[32%] bg-[#1e293b] text-white p-8 space-y-10">

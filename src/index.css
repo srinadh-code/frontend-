@@ -134,7 +134,5 @@
   .dept-card-active {
     @apply border-primary bg-accent;
   }
-  section {
-  page-break-inside: avoid;
-}
+  
 }
