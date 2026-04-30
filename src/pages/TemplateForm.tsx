@@ -168,7 +168,7 @@ const downloadPDF = async () => {
       html2canvas: {
         scale: 1.2,
         useCORS: true,
-        scrollY: 0   //  prevents cut issues
+        scrollY: 0   // ✅ prevents cut issues
       },
 
       jsPDF: {
