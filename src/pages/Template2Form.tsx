@@ -356,7 +356,7 @@ export default function App() {
         <div ref={resumeRef} className="w-[210mm] min-h-[297mm] bg-white shadow-2xl flex flex-col text-slate-800 p-0 m-0">
           
           {/* MODERN HEADER */}
-          <header className="px-12 py-12 border-b-[8px]" style={{ borderColor: themeColor }}>
+          <header className="px-12 py-12">
             <div className="flex justify-between items-start">
                 <div className="flex-1">
                     <h1 className="text-5xl font-black uppercase tracking-tighter leading-none" style={{ color: themeColor }}>{form.full_name || "YOUR NAME"}</h1>
