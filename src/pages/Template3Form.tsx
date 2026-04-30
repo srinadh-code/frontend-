@@ -471,16 +471,12 @@ export default function App() {
     const u = [...form[f]]; u.splice(i, 1); setForm({...form, [f]: u});
   };
 
-  const canvas = await window.html2canvas(resumeRef.current, { 
-  scale: 1.5,   // 🔥 changed from 3 → 1.5
-  useCORS: true 
-});
-
-const imgData = canvas.toDataURL('image/jpeg', 0.7); // 🔥 PNG → JPEG
-
-const pdf = new window.jspdf.jsPDF('p', 'mm', 'a4');
-
-pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+  const downloadPDF = async () => {
+    if (!resumeRef.current || !libsLoaded) return;
+    setIsDownloading(true);
+    const canvas = await window.html2canvas(resumeRef.current, { scale: 1.5, useCORS: true });
+    const pdf = new window.jspdf.jsPDF('p', 'mm', 'a4');
+    pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, 210, 297);
     pdf.save(`${form.full_name}_Resume.pdf`);
     setIsDownloading(false);
   };
