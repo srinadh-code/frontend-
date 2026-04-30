@@ -150,77 +150,41 @@ const handleCustomChange = (sectionIndex, itemIndex, value) => {
   updated[sectionIndex].items[itemIndex] = value;
   setForm({ ...form, customSections: updated });
 };
-const downloadPDF = async () => {
-  if (!resumeRef.current || !libsLoaded) return;
-  setIsDownloading(true);
 
-  try {
-    const { jsPDF } = window.jspdf;
-    const html2canvas = window.html2canvas;
-    const element = resumeRef.current;
+  const downloadPDF = async () => {
+    if (!resumeRef.current || !libsLoaded) return;
+    setIsDownloading(true);
 
-    const canvas = await html2canvas(element, {
-      scale: 1,              // 🔥 FIXED
-      useCORS: true,
-      backgroundColor: "#ffffff"
-    });
+    try {
+      const { jsPDF } = window.jspdf;
+      const html2canvas = window.html2canvas;
+      const element = resumeRef.current;
 
-    const imgData = canvas.toDataURL('image/jpeg', 0.6); // 🔥 FIXED
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: "#ffffff"
+      });
 
-    const pdf = new jsPDF({
-      orientation: 'portrait',
-      unit: 'mm',
-      format: 'a4'
-    });
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
 
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
-    pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
-
-    pdf.save(`${form.full_name || "resume"}_Resume.pdf`);
-
-  } catch (error) {
-    console.error("Error generating PDF:", error);
-  } finally {
-    setIsDownloading(false);
-  }
-};
-
-  // const downloadPDF = async () => {
-  //   if (!resumeRef.current || !libsLoaded) return;
-  //   setIsDownloading(true);
-
-  //   try {
-  //     const { jsPDF } = window.jspdf;
-  //     const html2canvas = window.html2canvas;
-  //     const element = resumeRef.current;
-
-  //     const canvas = await html2canvas(element, {
-  //       scale: 2,
-  //       useCORS: true,
-  //       logging: false,
-  //       backgroundColor: "#ffffff"
-  //     });
-
-  //     const imgData = canvas.toDataURL('image/png');
-  //     const pdf = new jsPDF({
-  //       orientation: 'portrait',
-  //       unit: 'mm',
-  //       format: 'a4'
-  //     });
-
-  //     const pdfWidth = pdf.internal.pageSize.getWidth();
-  //     const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-
-  //     pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-  //     pdf.save(`${form.full_name.replace(/\s+/g, '_')}_Resume.pdf`);
-  //   } catch (error) {
-  //     console.error("Error generating PDF:", error);
-  //   } finally {
-  //     setIsDownloading(false);
-  //   }
-  // };
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      pdf.save(`${form.full_name.replace(/\s+/g, '_')}_Resume.pdf`);
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+    } finally {
+      setIsDownloading(false);
+    }
+  };
 
   return (
     <div className="flex h-screen bg-slate-100 overflow-hidden font-sans">
