@@ -542,7 +542,7 @@ const downloadPDF = async () => {
 <div className="hidden md:flex flex-1 bg-slate-200 p-10 overflow-y-auto justify-center">
   <div
     ref={resumeRef}
-    className="w-[210mm] min-h-0 h-fit bg-white shadow-2xl p-16 block text-slate-800"
+    className="w-[210mm] min-h-[297mm] h-fit bg-white shadow-2xl p-16 flex flex-col gap-8 text-slate-800"
   >
 
     {/* HEADER */}
