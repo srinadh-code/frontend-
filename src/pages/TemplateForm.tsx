@@ -168,6 +168,7 @@ const downloadPDF = async () => {
       html2canvas: {
         scale: 1.2,
         useCORS: true,
+        scrollY: 0   //  prevents cut issues
       },
 
       jsPDF: {
@@ -177,7 +178,7 @@ const downloadPDF = async () => {
       },
 
       pagebreak: {
-        mode: ["css", "legacy"],   // 🔥 THIS MAKES MULTI PAGE WORK
+        mode: ["legacy"]   // 🔥 FIXED
       }
     };
 
