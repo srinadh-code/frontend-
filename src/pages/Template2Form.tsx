@@ -357,38 +357,7 @@ export default function App() {
           
           {/* MODERN HEADER */}
           <header className="px-12 py-12 border-b-[8px]" style={{ borderColor: themeColor }}>
-            <div className="grid grid-cols-2 gap-x-6 items-start">
-
-  {/* ROW 1 */}
-  <div className="text-5xl font-black uppercase leading-tight break-words" style={{ color: themeColor }}>
-    {form.full_name || "YOUR NAME"}
-  </div>
-
-  <div className="text-right text-xs font-bold text-slate-600 flex justify-end gap-3">
-    {form.email && <span className="break-all">{form.email}</span>}
-    {form.phone && <span>{form.phone}</span>}
-  </div>
-
-  {/* ROW 2 */}
-  <div className="text-lg font-bold text-slate-500 italic tracking-wide">
-    {form.tagline || "Professional Title"}
-  </div>
-
-  <div className="text-right text-xs font-bold text-slate-600 flex justify-end gap-3">
-    {form.linkedin && (
-      <a href={`https://${form.linkedin}`} target="_blank" className="underline break-all">
-        {form.linkedin}
-      </a>
-    )}
-    {form.github && (
-      <a href={`https://${form.github}`} target="_blank" className="underline break-all">
-        {form.github}
-      </a>
-    )}
-  </div>
-
-</div>
-            {/* <div className="flex justify-between items-start">
+            <div className="flex justify-between items-start">
                 <div className="flex-1">
                     <h1 className="text-5xl font-black uppercase tracking-tighter leading-none" style={{ color: themeColor }}>{form.full_name || "YOUR NAME"}</h1>
                     <p className="text-lg font-bold text-slate-500 mt-2 italic tracking-wide">{form.tagline || "Professional Title"}</p>
@@ -407,8 +376,7 @@ export default function App() {
                         <span>{form.github}</span> <Github size={12} style={{ color: themeColor }} />
                     </div>
                 </div>
-            </div> */}
-
+            </div>
           </header>
 
           <div className="flex flex-1">
