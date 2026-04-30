@@ -144,12 +144,12 @@ export default function App() {
 
   try {
     const canvas = await window.html2canvas(resumeRef.current, {
-      scale: 0.7,              // 🔥 reduced
+      scale: 1.2,              // 🔥 reduced
       useCORS: true,
       backgroundColor: "#ffffff"
     });
 
-    const imgData = canvas.toDataURL('image/jpeg', 0.4); // 🔥 more compression
+    const imgData = canvas.toDataURL('image/jpeg', 0.6); // 🔥 more compression
 
     const pdf = new window.jspdf.jsPDF({
       orientation: 'portrait',
