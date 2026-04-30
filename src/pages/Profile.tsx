@@ -312,7 +312,10 @@ const Profile = () => {
         setProfile(data);
       } catch (error) {
         console.error("Failed to load profile", error);
-        toast({ title: "Error", description: "Unable to load profile" });
+        toast({
+          title: "Error",
+          description: "Unable to load profile",
+        });
       } finally {
         setLoading(false);
       }
@@ -362,7 +365,7 @@ const Profile = () => {
               Member Since
             </p>
             <h2 className="mt-1 text-xl font-bold text-slate-900">
-              {new Date(profile.date_joined).toLocaleDateString()}
+              {profile.date_joined || "N/A"}   {/* ✅ FIXED */}
             </h2>
           </div>
         </div>
@@ -379,10 +382,10 @@ const Profile = () => {
 
           <div>
             <h2 className="text-2xl font-extrabold text-slate-900 sm:text-3xl">
-              {profile.username}
+              {profile.username || "User"}
             </h2>
             <p className="mt-1 text-sm text-slate-500">
-              {profile.email}
+              {profile.email || "N/A"}
             </p>
 
             <div className="mt-3 inline-flex items-center gap-2 rounded-full bg-green-50 px-3 py-1.5 text-sm font-medium text-green-700">
@@ -396,33 +399,36 @@ const Profile = () => {
         <div className="mt-8 space-y-6">
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
 
+            {/* Username */}
             <div className="rounded-2xl border border-slate-100 bg-slate-50 p-5">
               <Label className="text-sm text-slate-500">
                 Username
               </Label>
               <p className="mt-2 text-lg font-semibold text-slate-900">
-                {profile.username}
+                {profile.username || "N/A"}
               </p>
             </div>
 
+            {/* Email */}
             <div className="rounded-2xl border border-slate-100 bg-slate-50 p-5">
               <Label className="flex items-center gap-2 text-sm text-slate-500">
                 <Mail className="h-4 w-4" />
                 Email
               </Label>
               <p className="mt-2 text-lg font-semibold text-slate-900">
-                {profile.email}
+                {profile.email || "N/A"}
               </p>
             </div>
           </div>
 
+          {/* Member Since */}
           <div className="rounded-2xl border border-slate-100 bg-slate-50 p-5">
             <Label className="flex items-center gap-2 text-sm text-slate-500">
               <Calendar className="h-4 w-4" />
               Member Since
             </Label>
             <p className="mt-2 text-lg font-semibold text-slate-900">
-              {new Date(profile.date_joined).toLocaleDateString()}
+              {profile.date_joined || "N/A"}   {/* ✅ FIXED */}
             </p>
           </div>
         </div>
