@@ -144,22 +144,26 @@ export default function App() {
 
   try {
     const canvas = await window.html2canvas(resumeRef.current, {
-      scale: 1,            // 🔥 FIXED
+      scale: 0.7,              // 🔥 reduced
       useCORS: true,
       backgroundColor: "#ffffff"
     });
 
-    const imgData = canvas.toDataURL('image/jpeg', 0.6); // 🔥 FIXED
+    const imgData = canvas.toDataURL('image/jpeg', 0.4); // 🔥 more compression
 
-    const pdf = new window.jspdf.jsPDF('p', 'mm', 'a4');
+    const pdf = new window.jspdf.jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4',
+      compress: true           // 🔥 extra compression
+    });
 
-    const imgProps = pdf.getImageProperties(imgData);
     const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
     pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
 
-    pdf.save(`${form.full_name.replace(/\s+/g, '_')}_Resume.pdf`);
+    pdf.save(`${form.full_name}_Resume.pdf`);
 
   } finally {
     setIsDownloading(false);
