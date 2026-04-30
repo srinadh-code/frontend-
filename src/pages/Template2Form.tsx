@@ -138,21 +138,48 @@ export default function App() {
     updated[sIdx].items.splice(iIdx, 1);
     setForm({ ...form, customSections: updated });
   };
-
   const downloadPDF = async () => {
-    if (!resumeRef.current || !libsLoaded) return;
-    setIsDownloading(true);
-    try {
-      const canvas = await window.html2canvas(resumeRef.current, { scale: 2, useCORS: true });
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new window.jspdf.jsPDF('p', 'mm', 'a4');
-      const imgProps = pdf.getImageProperties(imgData);
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-      pdf.save(`${form.full_name.replace(/\s+/g, '_')}_Resume.pdf`);
-    } finally { setIsDownloading(false); }
-  };
+  if (!resumeRef.current || !libsLoaded) return;
+  setIsDownloading(true);
+
+  try {
+    const canvas = await window.html2canvas(resumeRef.current, {
+      scale: 1,            // 🔥 FIXED
+      useCORS: true,
+      backgroundColor: "#ffffff"
+    });
+
+    const imgData = canvas.toDataURL('image/jpeg', 0.6); // 🔥 FIXED
+
+    const pdf = new window.jspdf.jsPDF('p', 'mm', 'a4');
+
+    const imgProps = pdf.getImageProperties(imgData);
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+    pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+
+    pdf.save(`${form.full_name.replace(/\s+/g, '_')}_Resume.pdf`);
+
+  } finally {
+    setIsDownloading(false);
+  }
+};
+
+  // const downloadPDF = async () => {
+  //   if (!resumeRef.current || !libsLoaded) return;
+  //   setIsDownloading(true);
+  //   try {
+  //     const canvas = await window.html2canvas(resumeRef.current, { scale: 2, useCORS: true });
+  //     const imgData = canvas.toDataURL('image/png');
+  //     const pdf = new window.jspdf.jsPDF('p', 'mm', 'a4');
+  //     const imgProps = pdf.getImageProperties(imgData);
+  //     const pdfWidth = pdf.internal.pageSize.getWidth();
+  //     const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+  //     pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+  //     pdf.save(`${form.full_name.replace(/\s+/g, '_')}_Resume.pdf`);
+  //   } finally { setIsDownloading(false); }
+  // };
 
   return (
     <div className="flex h-screen bg-slate-200 overflow-hidden font-sans">
