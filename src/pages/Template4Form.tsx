@@ -344,7 +344,7 @@ export default function App() {
           <div className={`w-[32%] ${activeTheme.sidebar} p-8 border-r border-slate-100 flex flex-col space-y-10`}>
             <div>
               {/* <h1 className={`text-4xl font-black ${activeTheme.primary} uppercase leading-none break-words`}>{form.full_name}</h1> */}
-              <h1 className={`text-4xl font-black ${activeTheme.primary} uppercase leading-none`}>
+              <h1 className={`text-2xl font-black ${activeTheme.primary} uppercase leading-none`}>
   <span className="block break-words">
     {form.first_name || "FIRST"}
   </span>
