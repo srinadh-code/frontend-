@@ -101,9 +101,10 @@ export default function App() {
       document.head.appendChild(script);
     });
     Promise.all([
-      loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'),
-      loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js')
-    ]).then(() => setLibsLoaded(true));
+    loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'),
+    loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'),
+    loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js') // ✅ ADD HERE
+  ]).then(() => setLibsLoaded(true));
   }, []);
 
   const toggleSection = (sect) => setActiveSections(prev => ({ ...prev, [sect]: !prev[sect] }));
@@ -140,31 +141,39 @@ export default function App() {
   };
   const downloadPDF = async () => {
   if (!resumeRef.current || !libsLoaded) return;
+
   setIsDownloading(true);
 
   try {
-    const canvas = await window.html2canvas(resumeRef.current, {
-      scale: 1.7,              // 🔥 reduced
-      useCORS: true,
-      backgroundColor: "#ffffff"
-    });
+    const element = resumeRef.current;
 
-    const imgData = canvas.toDataURL('image/jpeg', 0.9); // 🔥 more compression
+    const opt = {
+      margin: 0,   // 🔥 no extra blank page
 
-    const pdf = new window.jspdf.jsPDF({
-      orientation: 'portrait',
-      unit: 'mm',
-      format: 'a4',
-      compress: true           // 🔥 extra compression
-    });
+      filename: `${form.full_name || "resume"}.pdf`,
 
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      image: { type: "jpeg", quality: 0.9 },
 
-    pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+      html2canvas: {
+        scale: 2,
+        useCORS: true
+      },
 
-    pdf.save(`${form.full_name}_Resume.pdf`);
+      jsPDF: {
+        unit: "mm",
+        format: "a4",
+        orientation: "portrait"
+      },
 
+      pagebreak: {
+        mode: ["css", "legacy"]   // 🔥 AUTO MULTI PAGE
+      }
+    };
+
+    await window.html2pdf().set(opt).from(element).save();
+
+  } catch (err) {
+    console.error("PDF error:", err);
   } finally {
     setIsDownloading(false);
   }
