@@ -101,9 +101,12 @@ export default function App() {
       document.head.appendChild(script);
     });
     Promise.all([
-      loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'),
-      loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js')
-    ]).then(() => setLibsLoaded(true));
+  loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'),
+  loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'),
+  loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js') // 🔥 MUST
+]).then(() => {
+  setLibsLoaded(true);
+});
   }, []);
 
   const toggleSection = (sect) => setActiveSections(prev => ({ ...prev, [sect]: !prev[sect] }));
@@ -140,53 +143,42 @@ export default function App() {
   };
   const downloadPDF = async () => {
   if (!resumeRef.current || !libsLoaded) return;
+
   setIsDownloading(true);
 
   try {
-    const canvas = await window.html2canvas(resumeRef.current, {
-      scale: 1.5,               // balance quality + size
-      useCORS: true,
-      backgroundColor: "#ffffff"
-    });
+    const element = resumeRef.current;
 
-    // ✅ FIXED quality (0–1 only)
-    const imgData = canvas.toDataURL("image/jpeg", 0.8);
+    const opt = {
+      margin: 0.3,   // less margin → better fit
+      filename: `${form.full_name || "resume"}.pdf`,
 
-    const pdf = new window.jspdf.jsPDF({
-      orientation: "portrait",
-      unit: "mm",
-      format: "a4",
-      compress: true
-    });
+      image: { type: "jpeg", quality: 0.75 }, // balance size + quality
 
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = pdf.internal.pageSize.getHeight();
+      html2canvas: {
+        scale: 1.3,   // good clarity
+        useCORS: true,
+        scrollY: 0    // 🔥 IMPORTANT (fix cropping issues)
+      },
 
-    const imgWidth = pdfWidth;
-    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      jsPDF: {
+        unit: "in",
+        format: "a4",
+        orientation: "portrait"
+      },
 
-    let heightLeft = imgHeight;
-    let position = 0;
+      pagebreak: {
+        mode: ["legacy"]   // 🔥 CRITICAL FIX (no empty space issue)
+      }
+    };
 
-    // 🟢 FIRST PAGE
-    pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
-    heightLeft -= pdfHeight;
+    await window.html2pdf()
+      .set(opt)
+      .from(element)
+      .save();
 
-    // 🟢 ADD EXTRA PAGES IF NEEDED
-    while (heightLeft > 0) {
-      position = heightLeft - imgHeight;
-
-      pdf.addPage();
-
-      pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
-
-      heightLeft -= pdfHeight;
-    }
-
-    pdf.save(`${form.full_name}_Resume.pdf`);
-
-  } catch (err) {
-    console.error("PDF Error:", err);
+  } catch (error) {
+    console.error("PDF Error:", error);
   } finally {
     setIsDownloading(false);
   }
