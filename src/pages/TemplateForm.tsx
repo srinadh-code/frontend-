@@ -105,12 +105,11 @@ export default function App() {
     };
 
     Promise.all([
-  loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'),
-  loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'),
-  loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js')  // ✅ ADD THIS
-]).then(() => {
-  setLibsLoaded(true);
-});
+      loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'),
+      loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js')
+    ]).then(() => {
+      setLibsLoaded(true);
+    });
   }, []);
 
   const toggleSection = (sect) => setActiveSections(prev => ({ ...prev, [sect]: !prev[sect] }));
@@ -153,38 +152,36 @@ const handleCustomChange = (sectionIndex, itemIndex, value) => {
 };
 const downloadPDF = async () => {
   if (!resumeRef.current || !libsLoaded) return;
-
   setIsDownloading(true);
 
   try {
+    const { jsPDF } = window.jspdf;
+    const html2canvas = window.html2canvas;
     const element = resumeRef.current;
 
-    const opt = {
-      margin: 0.5,
-      filename: `${form.full_name || "resume"}.pdf`,
+    const canvas = await html2canvas(element, {
+      scale: 1,              // 🔥 FIXED
+      useCORS: true,
+      backgroundColor: "#ffffff"
+    });
 
-      image: { type: "jpeg", quality: 0.7 },
+    const imgData = canvas.toDataURL('image/jpeg', 0.6); // 🔥 FIXED
 
-      html2canvas: {
-        scale: 1.2,
-        useCORS: true,
-      },
+    const pdf = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4'
+    });
 
-      jsPDF: {
-        unit: "in",
-        format: "a4",
-        orientation: "portrait",
-      },
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
-      pagebreak: {
-        mode: ["css", "legacy"],   // 🔥 THIS MAKES MULTI PAGE WORK
-      }
-    };
+    pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
 
-    await window.html2pdf().set(opt).from(element).save();
+    pdf.save(`${form.full_name || "resume"}_Resume.pdf`);
 
-  } catch (err) {
-    console.error("PDF error:", err);
+  } catch (error) {
+    console.error("Error generating PDF:", error);
   } finally {
     setIsDownloading(false);
   }
