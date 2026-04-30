@@ -1,44 +1,3 @@
-// import React, { useState, useRef } from "react";
-
-// export default function Template4Form() {
-//   const resumeRef = useRef(null);
-
-//   const [form, setForm] = useState({
-//     full_name: "",
-//     email: "",
-//     summary: "",
-//     skills: [{ name: "" }]
-//   });
-
-//   return (
-//     <div className="flex h-screen">
-
-//       {/* LEFT */}
-//       <div className="w-[400px] p-5 space-y-3">
-//         <input placeholder="Name" onChange={(e)=>setForm({...form, full_name:e.target.value})} className="w-full border p-2"/>
-//         <input placeholder="Email" onChange={(e)=>setForm({...form, email:e.target.value})} className="w-full border p-2"/>
-//         <textarea placeholder="Summary" onChange={(e)=>setForm({...form, summary:e.target.value})} className="w-full border p-2"/>
-//       </div>
-
-//       {/* RIGHT */}
-//       <div className="flex-1 flex justify-center bg-gray-200 p-10">
-//         <div ref={resumeRef} className="w-[210mm] bg-white p-10">
-
-//           <h1 className="text-4xl text-purple-600 font-bold">
-//             {form.full_name}
-//           </h1>
-
-//           <p>{form.email}</p>
-
-//           <h2 className="text-purple-600 mt-4">Summary</h2>
-//           <p>{form.summary}</p>
-
-//         </div>
-//       </div>
-
-//     </div>
-//   );
-// }
 
 
 import React, { useState, useRef, useEffect } from 'react';
@@ -106,7 +65,8 @@ export default function App() {
   const activeTheme = THEMES[themeKey];
 
   const [form, setForm] = useState({
-    full_name: "Kavya Achhe",
+    first_name:"KAvya",   
+    last_name:"Achhe",
     role: "Junior Software Engineer",
     email: "kavyaachhe4@gmail.com",
     phone: "9876543210",
@@ -183,7 +143,8 @@ export default function App() {
     const canvas = await window.html2canvas(resumeRef.current, { scale: 3, useCORS: true });
     const pdf = new window.jspdf.jsPDF('p', 'mm', 'a4');
     pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, 210, 297);
-    pdf.save(`${form.full_name}_Resume.pdf`);
+    // pdf.save(`${form.full_name}_Resume.pdf`);
+    pdf.save(`${form.first_name}_${form.last_name}_Resume.pdf`);
     setIsDownloading(false);
   };
 
@@ -226,7 +187,20 @@ export default function App() {
           {activeSections.basics && (
             <div className="p-5 bg-slate-50 rounded-xl border border-slate-100 space-y-4">
               <div className="grid grid-cols-2 gap-4">
-                <InputField label="Full Name" value={form.full_name} onChange={e => setForm({...form, full_name: e.target.value})} />
+                {/* <InputField label="Full Name" value={form.full_name} onChange={e => setForm({...form, full_name: e.target.value})} />
+                 */}
+
+                 <InputField 
+    label="First Name" 
+    value={form.first_name} 
+    onChange={e => setForm({...form, first_name: e.target.value})} 
+  />
+
+  <InputField 
+    label="Last Name" 
+    value={form.last_name} 
+    onChange={e => setForm({...form, last_name: e.target.value})} 
+  />
                 <InputField label="Job Title" value={form.role} onChange={e => setForm({...form, role: e.target.value})} />
               </div>
               <InputField label="Profile Summary" isTextArea value={form.profile} onChange={e => setForm({...form, profile: e.target.value})} />
@@ -369,7 +343,15 @@ export default function App() {
           {/* SIDEBAR */}
           <div className={`w-[32%] ${activeTheme.sidebar} p-8 border-r border-slate-100 flex flex-col space-y-10`}>
             <div>
-              <h1 className={`text-4xl font-black ${activeTheme.primary} uppercase leading-none break-words`}>{form.full_name}</h1>
+              {/* <h1 className={`text-4xl font-black ${activeTheme.primary} uppercase leading-none break-words`}>{form.full_name}</h1> */}
+              <h1 className={`text-4xl font-black ${activeTheme.primary} uppercase leading-none`}>
+  <span className="block break-words">
+    {form.first_name || "FIRST"}
+  </span>
+  <span className="block break-words">
+    {form.last_name || "LAST"}
+  </span>
+</h1>
               <p className={`text-xs font-bold ${activeTheme.primary} opacity-80 mt-3 italic tracking-wide uppercase`}>{form.role}</p>
               
               <div className="mt-8 space-y-3 text-[8.5pt] text-slate-600">
