@@ -140,58 +140,50 @@ export default function App() {
   };
   const downloadPDF = async () => {
   if (!resumeRef.current || !libsLoaded) return;
-
   setIsDownloading(true);
 
   try {
-    const element = resumeRef.current;
+    const canvas = await window.html2canvas(resumeRef.current, {
+      scale: 1.5,              // 🔥 reduced
+      useCORS: true,
+      backgroundColor: "#ffffff"
+    });
 
-    const opt = {
-      margin: 0,   // 🔥 no extra blank page
+    const imgData = canvas.toDataURL('image/jpeg', 0.9); // 🔥 more compression
 
-      filename: `${form.full_name || "resume"}.pdf`,
+    const pdf = new window.jspdf.jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4',
+      compress: true           // 🔥 extra compression
+    });
 
-      image: { type: "jpeg", quality: 0.9 },
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
-      html2canvas: {
-        scale: 2,
-        useCORS: true
-      },
+    pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
 
-      jsPDF: {
-        unit: "mm",
-        format: "a4",
-        orientation: "portrait"
-      },
+    pdf.save(`${form.full_name}_Resume.pdf`);
 
-      pagebreak: {
-        mode: ["css", "legacy"]   // 🔥 AUTO MULTI PAGE
-      }
-    };
-
-    await window.html2pdf().set(opt).from(element).save();
-
-  } catch (err) {
-    console.error("PDF error:", err);
   } finally {
     setIsDownloading(false);
   }
 };
 
-  const downloadPDF = async () => {
-    if (!resumeRef.current || !libsLoaded) return;
-    setIsDownloading(true);
-    try {
-      const canvas = await window.html2canvas(resumeRef.current, { scale: 2, useCORS: true });
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new window.jspdf.jsPDF('p', 'mm', 'a4');
-      const imgProps = pdf.getImageProperties(imgData);
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-      pdf.save(`${form.full_name.replace(/\s+/g, '_')}_Resume.pdf`);
-    } finally { setIsDownloading(false); }
-  };
+  // const downloadPDF = async () => {
+  //   if (!resumeRef.current || !libsLoaded) return;
+  //   setIsDownloading(true);
+  //   try {
+  //     const canvas = await window.html2canvas(resumeRef.current, { scale: 2, useCORS: true });
+  //     const imgData = canvas.toDataURL('image/png');
+  //     const pdf = new window.jspdf.jsPDF('p', 'mm', 'a4');
+  //     const imgProps = pdf.getImageProperties(imgData);
+  //     const pdfWidth = pdf.internal.pageSize.getWidth();
+  //     const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+  //     pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+  //     pdf.save(`${form.full_name.replace(/\s+/g, '_')}_Resume.pdf`);
+  //   } finally { setIsDownloading(false); }
+  // };
 
   return (
     <div className="flex h-screen bg-slate-200 overflow-hidden font-sans">
@@ -364,7 +356,7 @@ export default function App() {
         <div ref={resumeRef} className="w-[210mm] min-h-[297mm] bg-white shadow-2xl flex flex-col text-slate-800 p-0 m-0">
           
           {/* MODERN HEADER */}
-          <header className="px-12 py-12">
+          <header className="px-12 py-12 border-b-[8px]" style={{ borderColor: themeColor }}>
             <div className="flex justify-between items-start">
                 <div className="flex-1">
                     <h1 className="text-5xl font-black uppercase tracking-tighter leading-none" style={{ color: themeColor }}>{form.full_name || "YOUR NAME"}</h1>
@@ -519,7 +511,7 @@ export default function App() {
           </div>
           
           {/* FOOTER STRIP */}
-          {/* <footer className="h-2 w-full mt-auto" style={{ backgroundColor: themeColor }}></footer> */}
+          <footer className="h-2 w-full mt-auto" style={{ backgroundColor: themeColor }}></footer>
         </div>
       </div>
     </div>
