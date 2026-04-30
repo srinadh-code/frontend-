@@ -520,7 +520,7 @@ export default function App() {
           </div>
           
           {/* FOOTER STRIP */}
-          <footer className="h-2 w-full mt-auto" style={{ backgroundColor: themeColor }}></footer>
+          {/* <footer className="h-2 w-full mt-auto" style={{ backgroundColor: themeColor }}></footer> */}
         </div>
       </div>
     </div>
