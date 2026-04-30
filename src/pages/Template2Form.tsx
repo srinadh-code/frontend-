@@ -390,7 +390,7 @@ export default function App() {
             </div>
           </header>
 
-          {/* <div className="flex flex-1"> */}------22222
+          {/* <div className="flex flex-1"> */}
 
 
           <div className="grid grid-cols-[1.6fr_1fr]">
