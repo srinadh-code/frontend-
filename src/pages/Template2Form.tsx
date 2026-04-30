@@ -144,27 +144,49 @@ export default function App() {
 
   try {
     const canvas = await window.html2canvas(resumeRef.current, {
-      scale: 1.7,              // 🔥 reduced
+      scale: 1.5,               // balance quality + size
       useCORS: true,
       backgroundColor: "#ffffff"
     });
 
-    const imgData = canvas.toDataURL('image/jpeg', 1.1); // 🔥 more compression
+    // ✅ FIXED quality (0–1 only)
+    const imgData = canvas.toDataURL("image/jpeg", 0.8);
 
     const pdf = new window.jspdf.jsPDF({
-      orientation: 'portrait',
-      unit: 'mm',
-      format: 'a4',
-      compress: true           // 🔥 extra compression
+      orientation: "portrait",
+      unit: "mm",
+      format: "a4",
+      compress: true
     });
 
     const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+    const pdfHeight = pdf.internal.pageSize.getHeight();
 
-    pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+    const imgWidth = pdfWidth;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+    let heightLeft = imgHeight;
+    let position = 0;
+
+    // 🟢 FIRST PAGE
+    pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
+    heightLeft -= pdfHeight;
+
+    // 🟢 ADD EXTRA PAGES IF NEEDED
+    while (heightLeft > 0) {
+      position = heightLeft - imgHeight;
+
+      pdf.addPage();
+
+      pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
+
+      heightLeft -= pdfHeight;
+    }
 
     pdf.save(`${form.full_name}_Resume.pdf`);
 
+  } catch (err) {
+    console.error("PDF Error:", err);
   } finally {
     setIsDownloading(false);
   }
