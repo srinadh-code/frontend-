@@ -137,16 +137,54 @@ export default function App() {
     setForm({...form, [field]: updated});
   };
 
+  // const downloadPDF = async () => {
+  //   if (!resumeRef.current || !libsLoaded) return;
+  //   setIsDownloading(true);
+  //   const canvas = await window.html2canvas(resumeRef.current, { scale: 3, useCORS: true });
+  //   const pdf = new window.jspdf.jsPDF('p', 'mm', 'a4');
+  //   pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, 210, 297);
+  //   // pdf.save(`${form.full_name}_Resume.pdf`);
+  //   pdf.save(`${form.first_name}_${form.last_name}_Resume.pdf`);
+  //   setIsDownloading(false);
+  // };
   const downloadPDF = async () => {
-    if (!resumeRef.current || !libsLoaded) return;
-    setIsDownloading(true);
-    const canvas = await window.html2canvas(resumeRef.current, { scale: 3, useCORS: true });
-    const pdf = new window.jspdf.jsPDF('p', 'mm', 'a4');
-    pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, 210, 297);
-    // pdf.save(`${form.full_name}_Resume.pdf`);
-    pdf.save(`${form.first_name}_${form.last_name}_Resume.pdf`);
-    setIsDownloading(false);
-  };
+  if (!resumeRef.current || !libsLoaded) return;
+
+  setIsDownloading(true);
+
+  const canvas = await window.html2canvas(resumeRef.current, {
+    scale: 2,
+    useCORS: true
+  });
+
+  const imgData = canvas.toDataURL('image/png');
+
+  const pdf = new window.jspdf.jsPDF('p', 'mm', 'a4');
+
+  const imgWidth = 210;
+  const pageHeight = 297;
+
+  const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+  let heightLeft = imgHeight;
+  let position = 0;
+
+  // PAGE 1
+  pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+  heightLeft -= pageHeight;
+
+  // PAGE 2, 3, ...
+  while (heightLeft > 0) {
+    position = heightLeft - imgHeight;
+    pdf.addPage();
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+  }
+
+  pdf.save(`${form.full_name}_Resume.pdf`);
+
+  setIsDownloading(false);
+};
 
   return (
     <div className="flex h-screen bg-slate-100 overflow-hidden text-slate-900">
@@ -338,7 +376,7 @@ export default function App() {
 
       {/* PREVIEW PANEL */}
       <div className="flex-1 overflow-y-auto p-12 bg-slate-200 flex justify-center">
-        <div ref={resumeRef} className="w-[210mm] min-h-[297mm] h-fit bg-white shadow-2xl flex font-sans text-[#101820]">
+        <div ref={resumeRef} className="w-[210mm] bg-white shadow-2xl font-sans text-[#101820]">
           
           {/* SIDEBAR */}
           <div className={`w-[33%] ${activeTheme.sidebar} p-8 border-r border-slate-100 flex flex-col space-y-10`}>

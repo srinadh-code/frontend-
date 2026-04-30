@@ -101,10 +101,9 @@ export default function App() {
       document.head.appendChild(script);
     });
     Promise.all([
-    loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'),
-    loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'),
-    loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js') // ✅ ADD HERE
-  ]).then(() => setLibsLoaded(true));
+      loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'),
+      loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js')
+    ]).then(() => setLibsLoaded(true));
   }, []);
 
   const toggleSection = (sect) => setActiveSections(prev => ({ ...prev, [sect]: !prev[sect] }));
@@ -362,9 +361,7 @@ export default function App() {
 
       {/* PREVIEW PANEL */}
       <div className="flex-1 bg-slate-300 p-8 overflow-y-auto flex justify-center items-start">
-        {/* <div ref={resumeRef} className="w-[210mm] min-h-[297mm] bg-white shadow-2xl flex flex-col text-slate-800 p-0 m-0"> 11111111
-         */}
-         <div ref={resumeRef} className="w-[210mm] bg-white shadow-2xl">
+        <div ref={resumeRef} className="w-[210mm] min-h-[297mm] bg-white shadow-2xl flex flex-col text-slate-800 p-0 m-0">
           
           {/* MODERN HEADER */}
           <header className="px-12 py-12">
@@ -390,15 +387,12 @@ export default function App() {
             </div>
           </header>
 
-          {/* <div className="flex flex-1"> */}
-
-
-          <div className="grid grid-cols-[1.6fr_1fr]">
+          <div className="flex flex-1">
             {/* MAIN COLUMN (LEFT) */}
             <div className="flex-[1.6] px-12 py-10 space-y-10 border-r border-slate-100">
               
               {/* Summary */}
-              <section className="break-inside-avoid">
+              <section>
                 <h2 className="text-xs font-black uppercase tracking-[0.25em] mb-4 flex items-center gap-2" style={{ color: themeColor }}>
                     <div className="h-px bg-slate-200 flex-1"></div>
                     SUMMARY
@@ -407,7 +401,7 @@ export default function App() {
               </section>
 
               {/* Experience */}
-              <section className="break-inside-avoid">
+              <section>
                 <h2 className="text-xs font-black uppercase tracking-[0.25em] mb-6 flex items-center gap-2" style={{ color: themeColor }}>
                     <div className="h-px bg-slate-200 flex-1"></div>
                     EXPERIENCE
@@ -427,7 +421,7 @@ export default function App() {
               </section>
 
               {/* Projects */}
-              <section className="break-inside-avoid">
+              <section>
                 <h2 className="text-xs font-black uppercase tracking-[0.25em] mb-6 flex items-center gap-2" style={{ color: themeColor }}>
                     <div className="h-px bg-slate-200 flex-1"></div>
                     KEY PROJECTS
@@ -454,9 +448,7 @@ export default function App() {
 
               {/* Custom Sections (Left Side - Even Index) */}
               {form.customSections.filter((_, i) => i % 2 === 0).map((sec, i) => (
-                // <section key={i}>
-
-                <section key={i} className="break-inside-avoid">
+                <section key={i}>
                   <h2 className="text-xs font-black uppercase tracking-[0.25em] mb-4 flex items-center gap-2" style={{ color: themeColor }}>
                       <div className="h-px bg-slate-200 flex-1"></div>
                       {sec.title}
@@ -472,9 +464,7 @@ export default function App() {
             <div className="flex-1 bg-slate-50/50 px-8 py-10">
               
               {/* Technical Skills */}
-              {/* <section className="mb-12"> */}
-
-              <section  className="break-inside-avoid">
+              <section className="mb-12">
                 <h2 className="text-[10px] font-black uppercase tracking-[0.2em] mb-6 border-b pb-2" style={{ color: themeColor, borderBottomColor: themeColor }}>Technical Skills</h2>
                 <div className="space-y-6">
                   {form.skills.map((s, i) => (
@@ -487,7 +477,7 @@ export default function App() {
               </section>
 
               {/* Soft Skills */}
-              <section  className="break-inside-avoid">
+              <section className="mb-12">
                 <h2 className="text-[10px] font-black uppercase tracking-[0.2em] mb-4 border-b pb-2" style={{ color: themeColor, borderBottomColor: themeColor }}>Professional Skills</h2>
                 <div className="flex flex-wrap gap-2">
                     {form.softSkills.split(',').map((skill, i) => (
@@ -499,8 +489,7 @@ export default function App() {
               </section>
 
               {/* Education */}
-              {/* <section className="mb-12"> */}
-              <section className="break-inside-avoid">
+              <section className="mb-12">
                 <h2 className="text-[10px] font-black uppercase tracking-[0.2em] mb-6 border-b pb-2" style={{ color: themeColor, borderBottomColor: themeColor }}>Education</h2>
                 <div className="space-y-6">
                   {form.educations.map((edu, i) => (
@@ -518,8 +507,7 @@ export default function App() {
 
               {/* Custom Sections (Right Side - Odd Index) */}
               {form.customSections.filter((_, i) => i % 2 !== 0).map((sec, i) => (
-                // <section key={i} className="mb-12">
-                <section key={i} className="break-inside-avoid">
+                <section key={i} className="mb-12">
                   <h2 className="text-[10px] font-black uppercase tracking-[0.2em] mb-4 border-b pb-2" style={{ color: themeColor, borderBottomColor: themeColor }}>{sec.title}</h2>
                   <ul className="text-[10pt] text-slate-600 space-y-2 ml-4 list-disc">
                     {sec.items.map((item, j) => item && <li key={j}>{item}</li>)}
