@@ -229,13 +229,10 @@ export default function App() {
   // };
 
   return (
-    // <div className="flex h-screen bg-slate-200 overflow-hidden font-sans">
-    // <div className="flex min-h-screen bg-slate-200 font-sans">
-    <div className="flex h-screen bg-slate-200 font-sans">
+    <div className="flex h-screen bg-slate-200 overflow-hidden font-sans">
       
       {/* EDITOR SIDEBAR */}
-      {/* <div className="w-[450px] h-full bg-slate-50 border-r flex flex-col shadow-2xl z-10"> */}
-      <div className="w-1/2 max-w-[600px] min-w-[400px] h-full bg-slate-50 border-r flex flex-col shadow-2xl z-10">
+      <div className="w-[450px] h-full bg-slate-50 border-r flex flex-col shadow-2xl z-10">
         <header className="p-5 border-b bg-white flex items-center justify-between">
           <div>
             <h2 className="font-black text-slate-800 text-xl tracking-tight">RESUMAKE <span className="text-blue-600">PRO</span></h2>
@@ -398,14 +395,8 @@ export default function App() {
       </div>
 
       {/* PREVIEW PANEL */}
-      {/* <div className="flex-1 bg-slate-300 p-8 overflow-y-auto flex justify-center items-start"> */}
-      {/* <div className="flex-1 bg-slate-300 p-8 flex justify-center items-start"> */}
-      <div className="w-1/2 bg-slate-300 p-8 flex justify-center items-start overflow-auto">
-        {/* <div ref={resumeRef} className="w-[210mm] min-h-[297mm] bg-white shadow-2xl flex flex-col text-slate-800 p-0 m-0"> */}
-        <div 
-  ref={resumeRef} 
-  className="w-full max-w-[800px] min-h-[1100px] bg-white shadow-2xl flex flex-col text-slate-800 p-0 m-0"
->
+      <div className="flex-1 bg-slate-300 p-8 overflow-y-auto flex justify-center items-start">
+        <div ref={resumeRef} className="w-[210mm] min-h-[297mm] bg-white shadow-2xl flex flex-col text-slate-800 p-0 m-0">
           
           {/* MODERN HEADER */}
           <header className="px-12 py-12">
