@@ -229,7 +229,8 @@ export default function App() {
   // };
 
   return (
-    <div className="flex h-screen bg-slate-200 overflow-hidden font-sans">
+    // <div className="flex h-screen bg-slate-200 overflow-hidden font-sans">
+    <div className="flex min-h-screen bg-slate-200 font-sans">
       
       {/* EDITOR SIDEBAR */}
       <div className="w-[450px] h-full bg-slate-50 border-r flex flex-col shadow-2xl z-10">
@@ -395,7 +396,8 @@ export default function App() {
       </div>
 
       {/* PREVIEW PANEL */}
-      <div className="flex-1 bg-slate-300 p-8 overflow-y-auto flex justify-center items-start">
+      {/* <div className="flex-1 bg-slate-300 p-8 overflow-y-auto flex justify-center items-start"> */}
+      <div className="flex-1 bg-slate-300 p-8 flex justify-center items-start">
         <div ref={resumeRef} className="w-[210mm] min-h-[297mm] bg-white shadow-2xl flex flex-col text-slate-800 p-0 m-0">
           
           {/* MODERN HEADER */}
