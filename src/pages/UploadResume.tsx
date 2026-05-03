@@ -83,6 +83,15 @@ if (!departmentId) {
 if (!subdepartmentId) {
   newErrors.subdepartment = "Select subdepartment";
 }
+// SKILLS
+if (!skills.trim()) {
+  newErrors.skills = "Skills are required";
+}
+
+// EXPERIENCE
+if (!experience || Number(experience) <= 0) {
+  newErrors.experience = "Enter valid experience";
+}
 
 // 5. FILE
 if (!file) {
@@ -377,6 +386,11 @@ if (Object.keys(newErrors).length > 0) {
                   className="h-14 rounded-xl border-slate-200 pl-12 text-base"
                 />
               </div>
+              {errors.skills && (
+  <p className="text-red-500 text-sm mt-1">
+    {errors.skills}
+  </p>
+)}
             </div>
 
             <div className="space-y-2.5">
@@ -394,6 +408,11 @@ if (Object.keys(newErrors).length > 0) {
                   className="h-14 rounded-xl border-slate-200 pl-12 text-base"
                 />
               </div>
+              {errors.experience && (
+  <p className="text-red-500 text-sm mt-1">
+    {errors.experience}
+  </p>
+)}
             </div>
           </div>
 
