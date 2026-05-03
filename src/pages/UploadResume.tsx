@@ -1,387 +1,3 @@
-// import { useEffect, useState } from "react";
-// import API from "@/services/api";
-// import { Input } from "@/components/ui/input";
-// import { Button } from "@/components/ui/button";
-// import { Label } from "@/components/ui/label";
-// import {
-//   Select,
-//   SelectContent,
-//   SelectItem,
-//   SelectTrigger,
-//   SelectValue,
-// } from "@/components/ui/select";
-// import {
-//   Upload,
-//   CheckCircle2,
-//   FileText,
-//   Briefcase,
-//   Mail,
-//   User,
-//   Sparkles,
-// } from "lucide-react";
-
-// const UploadResume = () => {
-//   const [departments, setDepartments] = useState<any[]>([]);
-//   const [subdepartments, setSubDepartments] = useState<any[]>([]);
-
-//   const [departmentId, setDepartmentId] = useState<number | null>(null);
-//   const [subdepartmentId, setSubdepartmentId] = useState<number | null>(null);
-
-//   const [name, setName] = useState("");
-//   const [email, setEmail] = useState("");
-//   const [skills, setSkills] = useState("");
-//   const [experience, setExperience] = useState("");
-//   const [file, setFile] = useState<File | null>(null);
-
-//   const [submitted, setSubmitted] = useState(false);
-//   const [errorMessage, setErrorMessage] = useState("");
-//   // const [errors, setErrors] = useState<any>({});
-
-//   useEffect(() => {
-//     const fetchData = async () => {
-//       try {
-//         const dept = await API.get("departments/");
-//         const sub = await API.get("subdepartments/");
-//         setDepartments(dept.data);
-//         setSubDepartments(sub.data);
-//       } catch (err) {
-//         console.error(err);
-//       }
-//     };
-//     fetchData();
-//   }, []);
-
-//   const filteredSubDepartments = departmentId
-//     ? subdepartments.filter((s) => s.department === departmentId)
-//     : [];
-
-//   const handleSubmit = async (e: any) => {
-//   e.preventDefault();
-//   setErrorMessage("");
-//   setErrors({});
-
-//   const newErrors: any = {};
-
-//   // ✅ Name & Email
-//   if (!name) newErrors.name = "Name is required";
-
-//   if (!email) {
-//     newErrors.email = "Email is required";
-//   } else if (!/^\S+@\S+\.\S+$/.test(email)) {
-//     newErrors.email = "Enter a valid email";
-//   }
-
-//   // ✅ Department
-//   if (!departmentId) newErrors.department = "Select department";
-//   if (!subdepartmentId) newErrors.subdepartment = "Select subdepartment";
-
-//   // ✅ File
-//   if (!file) {
-//     newErrors.file = "Please upload a file";
-//   } else {
-//     if (!file.name.toLowerCase().endsWith(".pdf")) {
-//       newErrors.file = "Only PDF files are allowed";
-//     }
-
-//     const maxSize = 2 * 1024 * 1024;
-//     if (file.size > maxSize) {
-//       newErrors.file = "File must be less than 2MB";
-//     }
-//   }
-
-//   // ❌ stop if errors
-//   if (Object.keys(newErrors).length > 0) {
-//     setErrors(newErrors);
-//     return;
-//   }
-
-//   try {
-//     const formData = new FormData();
-
-//     formData.append("department", String(departmentId));
-//     formData.append("subdepartment", String(subdepartmentId));
-//     formData.append("name", name);
-//     formData.append("email", email);
-//     formData.append("skills", skills || "Not provided");
-//     formData.append("experience", experience ? String(experience) : "0");
-//     formData.append("file", file);
-
-//     await API.post("resumes/upload/", formData);
-
-//     setSubmitted(true);
-
-//   } catch (err: any) {
-//     console.error("UPLOAD ERROR:", err);
-
-//     if (err.response) {
-//       const data = err.response.data;
-
-//       if (data && typeof data === "object") {
-//         const firstError = Object.values(data)[0];
-//         setErrorMessage(
-//           Array.isArray(firstError) ? firstError[0] : firstError || "Upload failed"
-//         );
-//       } else {
-//         setErrorMessage("Server error. Please try again later.");
-//       }
-//     } else {
-//       setErrorMessage("Network error. Check your connection.");
-//     }
-//   }
-// };
-
-
-
-//   if (submitted) {
-//     return (
-//       <div className="mx-auto max-w-2xl">
-//         <div className="rounded-[2rem] border border-slate-200 bg-white p-10 text-center shadow-sm">
-//           <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-green-100">
-//             <CheckCircle2 className="h-10 w-10 text-green-600" />
-//           </div>
-
-//           <h2 className="text-3xl font-extrabold text-slate-900">
-//             Resume Uploaded Successfully!
-//           </h2>
-//           <p className="mt-3 text-base text-slate-500">
-//             Your resume has been added successfully. You can upload another file
-//             whenever you want.
-//           </p>
-
-//           <Button
-//             onClick={() => {
-//               setSubmitted(false);
-//               setDepartmentId(null);
-//               setSubdepartmentId(null);
-//               setName("");
-//               setEmail("");
-//               setSkills("");
-//               setExperience("");
-//               setFile(null);
-//               setErrorMessage("");
-//             }}
-//             className="mt-8 h-12 rounded-xl bg-[#16a34a] px-6 text-base font-semibold hover:bg-[#15803d]"
-//           >
-//             Upload Another
-//           </Button>
-//         </div>
-//       </div>
-//     );
-//   }
-
-//   return (
-//     <div className="mx-auto max-w-5xl space-y-8">
-//       {/* Top intro */}
-//       <div className="rounded-[2rem] border border-green-100 bg-gradient-to-r from-[#eaf8ee] via-[#f4fbf6] to-white p-6 shadow-sm sm:p-8">
-//         <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-medium text-green-700 shadow-sm">
-//           <Sparkles className="h-4 w-4" />
-//           Resume Upload Portal
-//         </div>
-
-//         <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
-//           Upload Resume
-//         </h1>
-//         <p className="mt-3 max-w-2xl text-sm text-slate-600 sm:text-base">
-//           Add candidate details, choose department and subdepartment, then upload
-//           the resume file securely.
-//         </p>
-//       </div>
-
-//       {/* Error */}
-//       {errorMessage && (
-//         <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
-//           {errorMessage}
-//         </div>
-//       )}
-
-//       {/* Main form */}
-//       <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-//         <form className="space-y-8" onSubmit={handleSubmit}>
-//           {/* Department row */}
-//           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-//             <div className="space-y-2.5">
-//               <Label className="text-sm font-semibold text-slate-800">
-//                 Department
-//               </Label>
-//               <Select
-//                 value={departmentId ? String(departmentId) : ""}
-//                 onValueChange={(v) => {
-//                   setDepartmentId(Number(v));
-//                   setSubdepartmentId(null);
-//                 }}
-//               >
-//                 <SelectTrigger className="h-14 rounded-xl border-slate-200 text-base">
-//                   <SelectValue placeholder="Select Department" />
-//                 </SelectTrigger>
-//                 <SelectContent>
-//                   {departments.map((d) => (
-//                     <SelectItem key={d.id} value={String(d.id)}>
-//                       {d.name}
-//                     </SelectItem>
-//                   ))}
-//                 </SelectContent>
-//               </Select>
-//               {errors.department && (
-//   <p className="text-red-500 text-sm mt-1">
-//     {errors.department}
-//   </p>
-// )}
-              
-              
-//             </div>
-
-//             <div className="space-y-2.5">
-//               <Label className="text-sm font-semibold text-slate-800">
-//                 SubDepartment
-//               </Label>
-//               <Select
-//                 value={subdepartmentId ? String(subdepartmentId) : ""}
-//                 onValueChange={(v) => setSubdepartmentId(Number(v))}
-//               >
-//                 <SelectTrigger className="h-14 rounded-xl border-slate-200 text-base">
-//                   <SelectValue placeholder="Select SubDepartment" />
-//                 </SelectTrigger>
-//                 <SelectContent>
-//                   {filteredSubDepartments.map((s) => (
-//                     <SelectItem key={s.id} value={String(s.id)}>
-//                       {s.name}
-//                     </SelectItem>
-//                   ))}
-//                 </SelectContent>
-//               </Select>
-//               {errors.subdepartment && (
-//   <p className="text-red-500 text-sm mt-1">
-//     {errors.subdepartment}
-//   </p>
-// )}
-//             </div>
-//           </div>
-
-//           {/* Basic fields */}
-//           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-//             <div className="space-y-2.5">
-//               <Label className="text-sm font-semibold text-slate-800">
-//                 Candidate Name
-//               </Label>
-//               <div className="relative">
-//                 <User className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
-//                 <Input
-//                   placeholder="Enter candidate name"
-//                   value={name}
-//                   onChange={(e) => setName(e.target.value)}
-//                   className="h-14 rounded-xl border-slate-200 pl-12 text-base"
-//                 />
-                
-//               </div>
-//               {errors.name && (
-//   <p className="text-red-500 text-sm mt-1">
-//     {errors.name}
-//   </p>
-// )}
-//             </div>
-
-//             <div className="space-y-2.5">
-//               <Label className="text-sm font-semibold text-slate-800">
-//                 Email
-//               </Label>
-//               <div className="relative">
-//                 <Mail className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
-//                 <Input
-//                   placeholder="Enter email address"
-//                   value={email}
-//                   onChange={(e) => setEmail(e.target.value)}
-//                   className="h-14 rounded-xl border-slate-200 pl-12 text-base"
-//                 />
-                
-//               </div>
-//             </div>
-//             {errors.email && (
-//   <p className="text-red-500 text-sm mt-1">{errors.email}</p>
-// )}
-//           </div>
-
-//           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-//             <div className="space-y-2.5">
-//               <Label className="text-sm font-semibold text-slate-800">
-//                 Skills
-//               </Label>
-//               <div className="relative">
-//                 <FileText className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
-//                 <Input
-//                   placeholder="Enter skills"
-//                   value={skills}
-//                   onChange={(e) => setSkills(e.target.value)}
-//                   className="h-14 rounded-xl border-slate-200 pl-12 text-base"
-//                 />
-//               </div>
-//             </div>
-
-//             <div className="space-y-2.5">
-//               <Label className="text-sm font-semibold text-slate-800">
-//                 Experience
-//               </Label>
-//               <div className="relative">
-//                 <Briefcase className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
-//                 <Input
-//                   type="number"
-//                   min="0"
-//                   placeholder="Enter experience"
-//                   value={experience}
-//                   onChange={(e) => setExperience(e.target.value)}
-//                   className="h-14 rounded-xl border-slate-200 pl-12 text-base"
-//                 />
-//               </div>
-//             </div>
-//           </div>
-
-//           {/* File upload */}
-//           <div className="space-y-3">
-//             <Label className="text-sm font-semibold text-slate-800">
-//               Resume File
-//             </Label>
-
-//             <label className="block cursor-pointer rounded-[1.5rem] border-2 border-dashed border-green-200 bg-green-50/40 p-8 transition hover:border-green-400 hover:bg-green-50">
-//               <div className="flex flex-col items-center justify-center text-center">
-//                 <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-white text-green-600 shadow-sm">
-//                   <Upload className="h-8 w-8" />
-//                 </div>
-
-//                 <p className="text-base font-semibold text-slate-800">
-//                   {file ? file.name : "Click to upload resume"}
-//                 </p>
-//                 <p className="mt-2 text-sm text-slate-500">
-//                   Upload PDF,which is less than 2MB.
-//                 </p>
-//               </div>
-
-//               <input
-//                 type="file"
-//                 className="hidden"
-//                 onChange={(e) => setFile(e.target.files?.[0] || null)}
-//               />
-//             </label>
-//             {errors.file && (
-//   <p className="text-red-500 text-sm mt-1">{errors.file}</p>
-// )}
-//           </div>
-
-//           {/* Button */}
-//           <div className="flex justify-end">
-//             <Button
-//               type="submit"
-//               className="h-12 rounded-xl bg-[#16a34a] px-8 text-base font-semibold hover:bg-[#15803d]"
-//             >
-//               Upload Resume
-//             </Button>
-//           </div>
-//         </form>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default UploadResume;
-
 import { useEffect, useState } from "react";
 import API from "@/services/api";
 import { Input } from "@/components/ui/input";
@@ -419,9 +35,7 @@ const UploadResume = () => {
 
   const [submitted, setSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-
-  // ✅ FIX: must exist
-  const [errors, setErrors] = useState<any>({});
+  // const [errors, setErrors] = useState<any>({});
 
   useEffect(() => {
     const fetchData = async () => {
@@ -442,77 +56,155 @@ const UploadResume = () => {
     : [];
 
   const handleSubmit = async (e: any) => {
-    e.preventDefault();
-    setErrorMessage("");
-    setErrors({});
+  e.preventDefault();
+  setErrorMessage("");
 
-    const newErrors: any = {};
+  // ✅ 1. REQUIRED FIELDS
+  if (!name || !email) {
+    setErrorMessage("Name and email are required");
+    return;
+  }
 
-    if (!name) newErrors.name = "Name is required";
+  // ✅ 2. EMAIL FORMAT
+  if (!/^\S+@\S+\.\S+$/.test(email)) {
+    setErrorMessage("Enter a valid email address");
+    return;
+  }
 
-    if (!email) {
-      newErrors.email = "Email is required";
-    } else if (!/^\S+@\S+\.\S+$/.test(email)) {
-      newErrors.email = "Enter a valid email";
-    }
+  // ✅ 3. DEPARTMENT CHECK
+  if (!departmentId || !subdepartmentId) {
+    setErrorMessage("Select department and subdepartment");
+    return;
+  }
 
-    if (!departmentId) newErrors.department = "Select department";
-    if (!subdepartmentId)
-      newErrors.subdepartment = "Select subdepartment";
+  // ✅ 4. FILE REQUIRED
+  if (!file) {
+    setErrorMessage("Please upload a file");
+    return;
+  }
 
-    if (!file) {
-      newErrors.file = "Please upload a file";
-    } else {
-      if (!file.name.toLowerCase().endsWith(".pdf")) {
-        newErrors.file = "Only PDF files are allowed";
-      }
-      if (file.size > 2 * 1024 * 1024) {
-        newErrors.file = "File must be less than 2MB";
-      }
-    }
+  // ✅ 5. FILE TYPE (more reliable than file.type)
+  if (!file.name.toLowerCase().endsWith(".pdf")) {
+    setErrorMessage("Only PDF files are allowed");
+    return;
+  }
 
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
+  // ✅ 6. FILE SIZE
+  const maxSize = 2 * 1024 * 1024; // 2MB
+  if (file.size > maxSize) {
+    setErrorMessage("File size must be less than 2MB");
+    return;
+  }
 
-    try {
-      const formData = new FormData();
+  try {
+    const formData = new FormData();
 
-      formData.append("department", String(departmentId));
-      formData.append("subdepartment", String(subdepartmentId));
-      formData.append("name", name);
-      formData.append("email", email);
-      formData.append("skills", skills || "Not provided");
-      formData.append("experience", experience || "0");
-      formData.append("file", file);
+    formData.append("department", String(departmentId));
+    formData.append("subdepartment", String(subdepartmentId));
+    formData.append("name", name);
+    formData.append("email", email);
+    formData.append("skills", skills || "Not provided");
+    formData.append("experience", experience ? String(experience) : "0");
+    formData.append("file", file);
 
-      await API.post("resumes/upload/", formData);
-      setSubmitted(true);
+    await API.post("resumes/upload/", formData);
 
-    } catch (err: any) {
-      if (err.response) {
-        const data = err.response.data;
+    setSubmitted(true);
+
+  } catch (err: any) {
+    console.error("UPLOAD ERROR:", err);
+
+    if (err.response) {
+      const data = err.response.data;
+
+      if (data && typeof data === "object") {
         const firstError = Object.values(data)[0];
         setErrorMessage(
-          Array.isArray(firstError)
-            ? firstError[0]
-            : "Upload failed"
+          Array.isArray(firstError) ? firstError[0] : firstError || "Upload failed"
         );
       } else {
-        setErrorMessage("Network error");
+        setErrorMessage("Server error. Please try again later.");
       }
+    } else {
+      setErrorMessage("Network error. Check your connection.");
     }
-  };
+  }
+};
+
+
+// const validate = () => {
+//     let newErrors: any = {};
+
+//     if (!departmentId) newErrors.department = "Department is required";
+//     if (!subdepartmentId) newErrors.subdepartment = "Subdepartment is required";
+//     if (!name) newErrors.name = "Name is required";
+
+//     if (!email) {
+//       newErrors.email = "Email is required";
+//     } else if (!/^\S+@\S+\.\S+$/.test(email)) {
+//       newErrors.email = "Invalid email format";
+//     }
+
+//     if (!file) newErrors.file = "Resume file is required";
+
+//     return newErrors;
+//   };
+
+
+
+  // const handleSubmit = async (e: any) => {
+  //   e.preventDefault();
+
+  //   const validationErrors = validate();
+  //   setErrors(validationErrors);
+
+  //   if (Object.keys(validationErrors).length > 0) return;
+
+  //   try {
+  //     const formData = new FormData();
+
+      // formData.append("department", String(departmentId));
+      // formData.append("subdepartment", String(subdepartmentId));
+      // formData.append("name", name);
+      // formData.append("email", email);
+      // formData.append("skills", skills || "Not provided");
+      // formData.append("experience", String(experience));
+      // formData.append("file", file!);
+
+      // await API.post("resumes/upload/", formData);
+
+    //   setSubmitted(true);
+    //   setErrors({});
+    // } catch (err: any) {
+    //   const backendErrors = err?.response?.data;
+
+    //   let newErrors: any = {};
+
+    //   if (backendErrors?.email) {
+    //     newErrors.email = "Email already exists";
+    //   } else if (backendErrors?.error) {
+    //     newErrors.general = backendErrors.error;
+  //     }
+
+  //     setErrors(newErrors);
+  //   }
+  // };
 
   if (submitted) {
     return (
       <div className="mx-auto max-w-2xl">
-        <div className="rounded-[2rem] border bg-white p-10 text-center">
-          <CheckCircle2 className="mx-auto h-10 w-10 text-green-600" />
-          <h2 className="text-2xl font-bold mt-4">
+        <div className="rounded-[2rem] border border-slate-200 bg-white p-10 text-center shadow-sm">
+          <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-green-100">
+            <CheckCircle2 className="h-10 w-10 text-green-600" />
+          </div>
+
+          <h2 className="text-3xl font-extrabold text-slate-900">
             Resume Uploaded Successfully!
           </h2>
+          <p className="mt-3 text-base text-slate-500">
+            Your resume has been added successfully. You can upload another file
+            whenever you want.
+          </p>
 
           <Button
             onClick={() => {
@@ -524,9 +216,9 @@ const UploadResume = () => {
               setSkills("");
               setExperience("");
               setFile(null);
-              setErrors({});
+              setErrorMessage("");
             }}
-            className="mt-6"
+            className="mt-8 h-12 rounded-xl bg-[#16a34a] px-6 text-base font-semibold hover:bg-[#15803d]"
           >
             Upload Another
           </Button>
@@ -537,59 +229,189 @@ const UploadResume = () => {
 
   return (
     <div className="mx-auto max-w-5xl space-y-8">
+      {/* Top intro */}
+      <div className="rounded-[2rem] border border-green-100 bg-gradient-to-r from-[#eaf8ee] via-[#f4fbf6] to-white p-6 shadow-sm sm:p-8">
+        <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-medium text-green-700 shadow-sm">
+          <Sparkles className="h-4 w-4" />
+          Resume Upload Portal
+        </div>
 
+        <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+          Upload Resume
+        </h1>
+        <p className="mt-3 max-w-2xl text-sm text-slate-600 sm:text-base">
+          Add candidate details, choose department and subdepartment, then upload
+          the resume file securely.
+        </p>
+      </div>
+
+      {/* Error */}
       {errorMessage && (
-        <div className="text-red-500">{errorMessage}</div>
+        <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+          {errorMessage}
+        </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      {/* Main form */}
+      <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+        <form className="space-y-8" onSubmit={handleSubmit}>
+          {/* Department row */}
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <div className="space-y-2.5">
+              <Label className="text-sm font-semibold text-slate-800">
+                Department
+              </Label>
+              <Select
+                value={departmentId ? String(departmentId) : ""}
+                onValueChange={(v) => {
+                  setDepartmentId(Number(v));
+                  setSubdepartmentId(null);
+                }}
+              >
+                <SelectTrigger className="h-14 rounded-xl border-slate-200 text-base">
+                  <SelectValue placeholder="Select Department" />
+                </SelectTrigger>
+                <SelectContent>
+                  {departments.map((d) => (
+                    <SelectItem key={d.id} value={String(d.id)}>
+                      {d.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
-        {/* Department */}
-        <Select onValueChange={(v) => setDepartmentId(Number(v))}>
-          <SelectTrigger>
-            <SelectValue placeholder="Select Department" />
-          </SelectTrigger>
-          <SelectContent>
-            {departments.map((d) => (
-              <SelectItem key={d.id} value={String(d.id)}>
-                {d.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        {errors.department && <p className="text-red-500">{errors.department}</p>}
+            <div className="space-y-2.5">
+              <Label className="text-sm font-semibold text-slate-800">
+                SubDepartment
+              </Label>
+              <Select
+                value={subdepartmentId ? String(subdepartmentId) : ""}
+                onValueChange={(v) => setSubdepartmentId(Number(v))}
+              >
+                <SelectTrigger className="h-14 rounded-xl border-slate-200 text-base">
+                  <SelectValue placeholder="Select SubDepartment" />
+                </SelectTrigger>
+                <SelectContent>
+                  {filteredSubDepartments.map((s) => (
+                    <SelectItem key={s.id} value={String(s.id)}>
+                      {s.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
 
-        {/* SubDepartment */}
-        <Select onValueChange={(v) => setSubdepartmentId(Number(v))}>
-          <SelectTrigger>
-            <SelectValue placeholder="Select SubDepartment" />
-          </SelectTrigger>
-          <SelectContent>
-            {filteredSubDepartments.map((s) => (
-              <SelectItem key={s.id} value={String(s.id)}>
-                {s.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        {errors.subdepartment && <p className="text-red-500">{errors.subdepartment}</p>}
+          {/* Basic fields */}
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <div className="space-y-2.5">
+              <Label className="text-sm font-semibold text-slate-800">
+                Candidate Name
+              </Label>
+              <div className="relative">
+                <User className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+                <Input
+                  placeholder="Enter candidate name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="h-14 rounded-xl border-slate-200 pl-12 text-base"
+                />
+              </div>
+            </div>
 
-        {/* Name */}
-        <Input value={name} onChange={(e) => setName(e.target.value)} />
-        {errors.name && <p className="text-red-500">{errors.name}</p>}
+            <div className="space-y-2.5">
+              <Label className="text-sm font-semibold text-slate-800">
+                Email
+              </Label>
+              <div className="relative">
+                <Mail className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+                <Input
+                  placeholder="Enter email address"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="h-14 rounded-xl border-slate-200 pl-12 text-base"
+                />
+              </div>
+            </div>
+          </div>
 
-        {/* Email */}
-        <Input value={email} onChange={(e) => setEmail(e.target.value)} />
-        {errors.email && <p className="text-red-500">{errors.email}</p>}
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <div className="space-y-2.5">
+              <Label className="text-sm font-semibold text-slate-800">
+                Skills
+              </Label>
+              <div className="relative">
+                <FileText className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+                <Input
+                  placeholder="Enter skills"
+                  value={skills}
+                  onChange={(e) => setSkills(e.target.value)}
+                  className="h-14 rounded-xl border-slate-200 pl-12 text-base"
+                />
+              </div>
+            </div>
 
-        {/* File */}
-        <input type="file" onChange={(e) => setFile(e.target.files?.[0] || null)} />
-        {errors.file && <p className="text-red-500">{errors.file}</p>}
+            <div className="space-y-2.5">
+              <Label className="text-sm font-semibold text-slate-800">
+                Experience
+              </Label>
+              <div className="relative">
+                <Briefcase className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+                <Input
+                  type="number"
+                  min="0"
+                  placeholder="Enter experience"
+                  value={experience}
+                  onChange={(e) => setExperience(e.target.value)}
+                  className="h-14 rounded-xl border-slate-200 pl-12 text-base"
+                />
+              </div>
+            </div>
+          </div>
 
-        <Button type="submit">Upload Resume</Button>
-      </form>
+          {/* File upload */}
+          <div className="space-y-3">
+            <Label className="text-sm font-semibold text-slate-800">
+              Resume File
+            </Label>
+
+            <label className="block cursor-pointer rounded-[1.5rem] border-2 border-dashed border-green-200 bg-green-50/40 p-8 transition hover:border-green-400 hover:bg-green-50">
+              <div className="flex flex-col items-center justify-center text-center">
+                <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-white text-green-600 shadow-sm">
+                  <Upload className="h-8 w-8" />
+                </div>
+
+                <p className="text-base font-semibold text-slate-800">
+                  {file ? file.name : "Click to upload resume"}
+                </p>
+                <p className="mt-2 text-sm text-slate-500">
+                  Upload PDF,which is less than 2MB.
+                </p>
+              </div>
+
+              <input
+                type="file"
+                className="hidden"
+                onChange={(e) => setFile(e.target.files?.[0] || null)}
+              />
+            </label>
+          </div>
+
+          {/* Button */}
+          <div className="flex justify-end">
+            <Button
+              type="submit"
+              className="h-12 rounded-xl bg-[#16a34a] px-8 text-base font-semibold hover:bg-[#15803d]"
+            >
+              Upload Resume
+            </Button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
 
 export default UploadResume;
+
