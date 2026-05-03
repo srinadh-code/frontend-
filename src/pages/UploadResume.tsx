@@ -128,7 +128,8 @@ if (file) {
     setErrorMessage("Network error. Check your connection.");
   }
 }
-
+  
+};
 
 
 
