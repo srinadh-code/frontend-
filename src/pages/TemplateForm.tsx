@@ -161,7 +161,7 @@ const handleCustomChange = (sectionIndex, itemIndex, value) => {
       const element = resumeRef.current;
 
       const canvas = await html2canvas(element, {
-        scale: 2,
+        scale: 1.3,
         useCORS: true,
         logging: false,
         backgroundColor: "#ffffff"
