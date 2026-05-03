@@ -362,7 +362,7 @@ const UploadResume = () => {
                   {file ? file.name : "Click to upload resume"}
                 </p>
                 <p className="mt-2 text-sm text-slate-500">
-                  Upload PDF, DOC, or DOCX resume file
+                  Upload only PDF.
                 </p>
               </div>
 

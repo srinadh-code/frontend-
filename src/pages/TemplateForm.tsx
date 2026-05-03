@@ -511,22 +511,41 @@ const handleCustomChange = (sectionIndex, itemIndex, value) => {
         {form.full_name || "Your Name"}
       </h1>
 
-      <div className="flex gap-4 text-slate-500">
-        {form.email && <span>{form.email}</span>}
-        {form.phone && <span>{form.phone}</span>}
-        {form.location && <span>{form.location}</span>}
-        {form.linkedin && (
-    <a href={form.linkedin} target="_blank" className="text-blue-600 underline">
+      <div className="flex flex-wrap gap-x-6 gap-y-2 text-slate-500 text-sm mt-2">
+
+  {form.email && (
+    <span className="break-all">{form.email}</span>
+  )}
+
+  {form.phone && (
+    <span>{form.phone}</span>
+  )}
+
+  {form.location && (
+    <span>{form.location}</span>
+  )}
+
+  {form.linkedin && (
+    <a
+      href={form.linkedin}
+      target="_blank"
+      className="text-blue-600 underline break-all"
+    >
       {form.linkedin}
     </a>
   )}
 
   {form.github && (
-    <a href={form.github} target="_blank" className="text-blue-600 underline">
+    <a
+      href={form.github}
+      target="_blank"
+      className="text-blue-600 underline break-all"
+    >
       {form.github}
     </a>
   )}
-      </div>
+
+</div>
     </div>
 
     {/* SUMMARY */}
