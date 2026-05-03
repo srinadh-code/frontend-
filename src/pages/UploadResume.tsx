@@ -58,41 +58,35 @@ const UploadResume = () => {
   const handleSubmit = async (e: any) => {
   e.preventDefault();
   setErrorMessage("");
+  // FILE VALIDATION
+if (file) {
+  const allowedTypes = ["application/pdf"];
+  const maxSize = 2 * 1024 * 1024; // 2MB
 
-  // ✅ 1. REQUIRED FIELDS
-  if (!name || !email) {
-    setErrorMessage("Name and email are required");
+  if (!allowedTypes.includes(file.type)) {
+    setErrorMessage("Only PDF files are allowed");
     return;
   }
 
-  // ✅ 2. EMAIL FORMAT
-  if (!/^\S+@\S+\.\S+$/.test(email)) {
-    setErrorMessage("Enter a valid email address");
+  if (file.size > maxSize) {
+    setErrorMessage("File size must be less than 2MB");
     return;
   }
+}
 
-  // ✅ 3. DEPARTMENT CHECK
-  if (!departmentId || !subdepartmentId) {
-    setErrorMessage("Select department and subdepartment");
-    return;
-  }
-
-  // ✅ 4. FILE REQUIRED
+  //  VALIDATIONS FIRST
   if (!file) {
     setErrorMessage("Please upload a file");
     return;
   }
 
-  // ✅ 5. FILE TYPE (more reliable than file.type)
-  if (!file.name.toLowerCase().endsWith(".pdf")) {
-    setErrorMessage("Only PDF files are allowed");
+  if (!departmentId || !subdepartmentId) {
+    setErrorMessage("Select department and subdepartment");
     return;
   }
 
-  // ✅ 6. FILE SIZE
-  const maxSize = 2 * 1024 * 1024; // 2MB
-  if (file.size > maxSize) {
-    setErrorMessage("File size must be less than 2MB");
+  if (!name || !email) {
+    setErrorMessage("Name and email are required");
     return;
   }
 
@@ -104,32 +98,39 @@ const UploadResume = () => {
     formData.append("name", name);
     formData.append("email", email);
     formData.append("skills", skills || "Not provided");
-    formData.append("experience", experience ? String(experience) : "0");
-    formData.append("file", file);
+    formData.append("experience", String(experience));
+    formData.append("file", file); //  IMPORTANT
 
+    //  API CALL
     await API.post("resumes/upload/", formData);
+    
 
     setSubmitted(true);
 
   } catch (err: any) {
-    console.error("UPLOAD ERROR:", err);
+  console.error("UPLOAD ERROR:", err);
 
-    if (err.response) {
-      const data = err.response.data;
+  if (err.response) {
+    const data = err.response.data;
 
-      if (data && typeof data === "object") {
-        const firstError = Object.values(data)[0];
-        setErrorMessage(
-          Array.isArray(firstError) ? firstError[0] : firstError || "Upload failed"
-        );
-      } else {
-        setErrorMessage("Server error. Please try again later.");
-      }
+    if (typeof data === "object") {
+      setErrorMessage(
+        data.file?.[0] ||
+        data.department?.[0] ||
+        data.subdepartment?.[0] ||
+        data.detail ||
+        "Upload failed"
+      );
     } else {
-      setErrorMessage("Network error. Check your connection.");
+      setErrorMessage("Server error. Please try again later.");
     }
+  } else {
+    setErrorMessage("Network error. Check your connection.");
   }
+}
+  
 };
+
 
 
 // const validate = () => {
