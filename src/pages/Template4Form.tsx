@@ -376,7 +376,7 @@ export default function App() {
 
       {/* PREVIEW PANEL */}
       <div className="flex-1 overflow-y-auto p-12 bg-slate-200 flex justify-center">
-        <div ref={resumeRef} className="w-[210mm] bg-white shadow-2xl font-sans text-[#101820]">
+        <div ref={resumeRef} className="w-[210mm] bg-white shadow-2xl font-sans text-[#101820] flex">
           
           {/* SIDEBAR */}
           <div className={`w-[33%] ${activeTheme.sidebar} p-8 border-r border-slate-100 flex flex-col space-y-10`}>
@@ -431,7 +431,7 @@ export default function App() {
           </div>
 
           {/* MAIN CONTENT */}
-          <div className="flex-1 p-12 flex flex-col space-y-12">
+          <div className="w-[67%] p-12 flex flex-col space-y-12">
             
             <section>
               <h2 className={`text-xl font-black ${activeTheme.primary} uppercase border-b-2 ${activeTheme.border} pb-1 mb-6 tracking-widest`}>Work Experience</h2>
