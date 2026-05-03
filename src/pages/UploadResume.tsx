@@ -35,7 +35,7 @@ const UploadResume = () => {
 
   const [submitted, setSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  // const [errors, setErrors] = useState<any>({});
+  const [errors, setErrors] = useState<any>({});
 
   useEffect(() => {
     const fetchData = async () => {
@@ -58,44 +58,51 @@ const UploadResume = () => {
   const handleSubmit = async (e: any) => {
   e.preventDefault();
   setErrorMessage("");
+setErrors({});
 
-  // ✅ 1. REQUIRED FIELDS
-  if (!name || !email) {
-    setErrorMessage("Name and email are required");
-    return;
-  }
+const newErrors: any = {};
 
-  // ✅ 2. EMAIL FORMAT
-  if (!/^\S+@\S+\.\S+$/.test(email)) {
-    setErrorMessage("Enter a valid email address");
-    return;
-  }
+// 1. NAME
+if (!name.trim()) {
+  newErrors.name = "Name is required";
+}
 
-  // ✅ 3. DEPARTMENT CHECK
-  if (!departmentId || !subdepartmentId) {
-    setErrorMessage("Select department and subdepartment");
-    return;
-  }
+// 2. EMAIL
+if (!email.trim()) {
+  newErrors.email = "Email is required";
+} else if (!/^\S+@\S+\.\S+$/.test(email)) {
+  newErrors.email = "Enter a valid email address";
+}
 
-  // ✅ 4. FILE REQUIRED
-  if (!file) {
-    setErrorMessage("Please upload a file");
-    return;
-  }
+// 3. DEPARTMENT
+if (!departmentId) {
+  newErrors.department = "Select department";
+}
 
-  // ✅ 5. FILE TYPE (more reliable than file.type)
+// 4. SUBDEPARTMENT
+if (!subdepartmentId) {
+  newErrors.subdepartment = "Select subdepartment";
+}
+
+// 5. FILE
+if (!file) {
+  newErrors.file = "Please upload a file";
+} else {
   if (!file.name.toLowerCase().endsWith(".pdf")) {
-    setErrorMessage("Only PDF files are allowed");
-    return;
+    newErrors.file = "Only PDF files are allowed";
   }
 
-  // ✅ 6. FILE SIZE
-  const maxSize = 2 * 1024 * 1024; // 2MB
+  const maxSize = 2 * 1024 * 1024;
   if (file.size > maxSize) {
-    setErrorMessage("File size must be less than 2MB");
-    return;
+    newErrors.file = "File size must be less than 2MB";
   }
+}
 
+// 🚫 STOP IF ANY ERROR
+if (Object.keys(newErrors).length > 0) {
+  setErrors(newErrors);
+  return;
+}
   try {
     const formData = new FormData();
 
@@ -120,8 +127,8 @@ const UploadResume = () => {
       if (data && typeof data === "object") {
         const firstError = Object.values(data)[0];
         setErrorMessage(
-          Array.isArray(firstError) ? firstError[0] : firstError || "Upload failed"
-        );
+  Array.isArray(firstError) ? firstError[0] : firstError || "Upload failed"
+);
       } else {
         setErrorMessage("Server error. Please try again later.");
       }
@@ -279,6 +286,11 @@ const UploadResume = () => {
                   ))}
                 </SelectContent>
               </Select>
+              {errors.department && (
+  <p className="text-red-500 text-sm mt-1">
+    {errors.department}
+  </p>
+)}
             </div>
 
             <div className="space-y-2.5">
@@ -300,6 +312,11 @@ const UploadResume = () => {
                   ))}
                 </SelectContent>
               </Select>
+              {errors.subdepartment && (
+    <p className="text-red-500 text-sm mt-1">
+      {errors.subdepartment}
+    </p>
+  )}
             </div>
           </div>
 
@@ -318,6 +335,11 @@ const UploadResume = () => {
                   className="h-14 rounded-xl border-slate-200 pl-12 text-base"
                 />
               </div>
+              {errors.name && (
+  <p className="text-red-500 text-sm mt-1">
+    {errors.name}
+  </p>
+)}
             </div>
 
             <div className="space-y-2.5">
@@ -333,6 +355,11 @@ const UploadResume = () => {
                   className="h-14 rounded-xl border-slate-200 pl-12 text-base"
                 />
               </div>
+              {errors.email && (
+  <p className="text-red-500 text-sm mt-1">
+    {errors.email}
+  </p>
+)}
             </div>
           </div>
 
@@ -396,6 +423,12 @@ const UploadResume = () => {
                 onChange={(e) => setFile(e.target.files?.[0] || null)}
               />
             </label>
+            {errors.file && (
+    <p className="text-red-500 text-sm mt-1">
+      {errors.file}
+    </p>
+            )}
+
           </div>
 
           {/* Button */}
