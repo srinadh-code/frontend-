@@ -144,35 +144,32 @@ export default function App() {
   setIsDownloading(true);
 
   try {
-    const canvas = await window.html2canvas(resumeRef.current, {
-      scale: 1.5,
-      useCORS: true,
-      backgroundColor: "#ffffff"
-    });
-
-    const imgData = canvas.toDataURL("image/jpeg", 0.9);
-
     const pdf = new window.jspdf.jsPDF("p", "mm", "a4");
 
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = pdf.internal.pageSize.getHeight();
+    const pageHeightPx = 1122; // A4 height in px (approx)
 
-    const imgWidth = pdfWidth;
-    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    const totalHeight = resumeRef.current.scrollHeight;
 
-    let heightLeft = imgHeight;
-    let position = 0;
+    let currentPosition = 0;
+    let pageIndex = 0;
 
-    // First page
-    pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
-    heightLeft -= pdfHeight;
+    while (currentPosition < totalHeight) {
+      const canvas = await window.html2canvas(resumeRef.current, {
+        scale: 2,
+        useCORS: true,
+        y: currentPosition,
+        height: pageHeightPx,
+        windowHeight: pageHeightPx
+      });
 
-    // Additional pages
-    while (heightLeft > 0) {
-      position = heightLeft - imgHeight;
-      pdf.addPage();
-      pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
-      heightLeft -= pdfHeight;
+      const imgData = canvas.toDataURL("image/jpeg", 0.9);
+
+      if (pageIndex > 0) pdf.addPage();
+
+      pdf.addImage(imgData, "JPEG", 0, 0, 210, 297);
+
+      currentPosition += pageHeightPx;
+      pageIndex++;
     }
 
     pdf.save(`${form.full_name}_Resume.pdf`);
