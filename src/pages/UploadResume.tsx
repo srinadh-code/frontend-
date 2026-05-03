@@ -58,6 +58,21 @@ const UploadResume = () => {
   const handleSubmit = async (e: any) => {
   e.preventDefault();
   setErrorMessage("");
+  // FILE VALIDATION
+if (file) {
+  const allowedTypes = ["application/pdf"];
+  const maxSize = 2 * 1024 * 1024; // 2MB
+
+  if (!allowedTypes.includes(file.type)) {
+    setErrorMessage("Only PDF files are allowed");
+    return;
+  }
+
+  if (file.size > maxSize) {
+    setErrorMessage("File size must be less than 2MB");
+    return;
+  }
+}
 
   //  VALIDATIONS FIRST
   if (!file) {
@@ -93,16 +108,26 @@ const UploadResume = () => {
     setSubmitted(true);
 
   } catch (err: any) {
-    console.error("UPLOAD ERROR:", err.response?.data);
+  console.error("UPLOAD ERROR:", err);
 
-    setErrorMessage(
-      err?.response?.data?.file?.[0] ||   // file error
-      err?.response?.data?.department?.[0] ||
-      err?.response?.data?.subdepartment?.[0] ||
-      err?.response?.data?.detail ||
-      JSON.stringify(err?.response?.data) ||
-      "Upload failed"
-    );
+  if (err.response) {
+    const data = err.response.data;
+
+    if (typeof data === "object") {
+      setErrorMessage(
+        data.file?.[0] ||
+        data.department?.[0] ||
+        data.subdepartment?.[0] ||
+        data.detail ||
+        "Upload failed"
+      );
+    } else {
+      setErrorMessage("Server error. Please try again later.");
+    }
+  } else {
+    setErrorMessage("Network error. Check your connection.");
+  }
+}
   }
 };
 
