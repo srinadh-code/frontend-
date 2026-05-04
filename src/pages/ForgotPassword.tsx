@@ -40,7 +40,7 @@ const ForgotPassword = () => {
   const { toast } = useToast();
 
   // const API_BASE = "http://127.0.0.1:8000/api/";
-   const API_BASE="https://resume-project-b.onrender.com";
+   const API_BASE="https://resume-project-b.onrender.com/api/";
 
   // STEP 1: Send OTP email
   const handleEmailSubmit = async (e: React.FormEvent) => {
@@ -55,7 +55,7 @@ const ForgotPassword = () => {
     setLoading(true);
 
     try {
-      const res = await axios.post(`${API_BASE}/forgot-password/`, {
+      const res = await axios.post(`${API_BASE}forgot-password/`, {
         email: email,
       });
 
