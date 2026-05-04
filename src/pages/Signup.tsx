@@ -37,27 +37,6 @@ const Signup = () => {
   const [loading, setLoading] = useState(false);
 
   const validate = () => {
-    const e: Record<string, string> = {};
-    if (!username.trim()) e.username = "Username is required";
-    if (!email.trim()) e.email = "Email is required";
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      e.email = "Invalid email format";
-    }
-    if (!password) e.password = "Password is required";
-    else if (password.length < 6) {
-      e.password = "Password must be at least 6 characters";
-    }
-
-    setErrors(e);
-    return Object.keys(e).length === 0;
-  };
-
-
-
-const handleSubmit = async (ev: React.FormEvent) => {
-  ev.preventDefault();
-
-  const validate = () => {
   const e: Record<string, string> = {};
 
   // ✅ USERNAME
@@ -90,6 +69,50 @@ const handleSubmit = async (ev: React.FormEvent) => {
 
   setErrors(e);
   return Object.keys(e).length === 0;
+};
+
+
+
+const handleSubmit = async (ev: React.FormEvent) => {
+  ev.preventDefault();
+
+  if (!validate()) return;
+
+  setLoading(true); // 🔥 start loading
+
+  try {
+    await signup(username, email, password);
+
+    // ✅ success toast
+    toast({
+      title: "Account created!",
+      description: "Please login to continue",
+    });
+
+    // 🚀 instant redirect (no delay)
+    navigate("/login", { replace: true });
+
+  } catch (err: any) {
+    console.error("Signup Error:", err);
+
+    let message = "Signup failed. Try again.";
+
+    if (err.response?.data) {
+      const data = err.response.data;
+
+      if (data.username) message = data.username[0];
+      else if (data.email) message = data.email[0];
+      else if (data.password) message = data.password[0];
+      else if (data.detail) message = data.detail;
+    }
+
+    toast({
+      title: "Error",
+      description: message,
+    });
+
+    setLoading(false); // ❌ stop loading only on error
+  }
 };
 
   return (
