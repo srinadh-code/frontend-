@@ -169,9 +169,9 @@ const Departments = () => {
   if (!editName.trim() || !editingDept) return;
 
   try {
-    await API.put(`departments/${editingDept.id}/`, {
-      name: editName,
-    });
+    await API.patch(`departments/${editingDept.id}/`, {
+  name: editName,
+});
 
     toast({ title: "Success", description: "Department updated" });
 
@@ -239,10 +239,9 @@ const updateSubDepartment = async () => {
   if (!editName.trim() || !editingSubDept) return;
 
   try {
-    await API.put(`subdepartments/${editingSubDept.id}/`, {
-      name: editName,
-      department: selectedDepartmentId,
-    });
+    await API.patch(`subdepartments/${editingSubDept.id}/`, {
+  name: editName,
+});
 
     toast({ title: "Success", description: "SubDepartment updated" });
 
@@ -432,7 +431,7 @@ const updateSubDepartment = async () => {
                 >
                   {/* <Trash2 size={16} /> */}
                   <div className="absolute right-4 top-4 flex gap-2">
-  
+
   {/* EDIT */}
   <button
     onClick={(e) => {
@@ -569,7 +568,6 @@ const updateSubDepartment = async () => {
                     {/* <Trash2 size={16} /> */}
                     <div className="absolute right-4 top-4 flex gap-2">
 
-  {/* EDIT */}
   <button
     onClick={() => {
       setEditingSubDept(sub);
@@ -580,7 +578,6 @@ const updateSubDepartment = async () => {
     <Pencil size={16} />
   </button>
 
-  {/* DELETE */}
   <button
     onClick={() => deleteSubDepartment(sub.id)}
     className="rounded-full p-2 text-red-500 hover:bg-red-50"
