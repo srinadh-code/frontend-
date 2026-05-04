@@ -336,7 +336,8 @@ const ForgotPassword = () => {
 
               {/* STEP 2: OTP */}
               {step === "otp" && (
-                <form onSubmit={handleOtpSubmit} className="space-y-6">
+                // <form onSubmit={handleOtpSubmit} className="space-y-6">
+                < form  className="space-y-6">
                   <div className="space-y-4">
                     <Label className="block text-center text-lg font-semibold text-slate-900">
                       Enter Verification Code
@@ -362,7 +363,8 @@ const ForgotPassword = () => {
                   </div>
 
                   <Button
-                    type="submit"
+                    type="button"
+                    onClick={handleOtpSubmit}
                     className="h-14 w-full rounded-2xl bg-emerald-600 text-base font-semibold hover:bg-emerald-700"
                   >
                     Verify OTP
