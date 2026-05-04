@@ -19,6 +19,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
+import { Pencil } from "lucide-react";
 import {
   Dialog,
   DialogTrigger,
@@ -41,7 +42,9 @@ const Departments = () => {
   const [newSubDept, setNewSubDept] = useState("");
   const [loading, setLoading] = useState(false);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-
+  const [editingDept, setEditingDept] = useState<any | null>(null);
+  const [editingSubDept, setEditingSubDept] = useState<any | null>(null);
+  const [editName, setEditName] = useState("");
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -162,6 +165,23 @@ const Departments = () => {
     await API.delete(`departments/delete/${id}/`);
     fetchData();
   };
+  const updateDepartment = async () => {
+  if (!editName.trim() || !editingDept) return;
+
+  try {
+    await API.put(`departments/${editingDept.id}/`, {
+      name: editName,
+    });
+
+    toast({ title: "Success", description: "Department updated" });
+
+    setEditingDept(null);
+    setEditName("");
+    fetchData();
+  } catch {
+    toast({ title: "Error", description: "Update failed" });
+  }
+};
 
   const addSubDepartment = async () => {
     if (!newSubDept.trim()) {
@@ -215,9 +235,53 @@ const Departments = () => {
   const selectedSubdepartments = subDepartments.filter(
     (s) => s.department === selectedDepartmentId
   );
+const updateSubDepartment = async () => {
+  if (!editName.trim() || !editingSubDept) return;
 
+  try {
+    await API.put(`subdepartments/${editingSubDept.id}/`, {
+      name: editName,
+      department: selectedDepartmentId,
+    });
+
+    toast({ title: "Success", description: "SubDepartment updated" });
+
+    setEditingSubDept(null);
+    setEditName("");
+    fetchData();
+  } catch {
+    toast({ title: "Error", description: "Update failed" });
+  }
+};
   return (
     <div className="space-y-8">
+      <Dialog open={!!editingDept || !!editingSubDept} onOpenChange={() => {
+  setEditingDept(null);
+  setEditingSubDept(null);
+}}>
+  <DialogContent>
+    <DialogHeader>
+      <DialogTitle>Edit</DialogTitle>
+    </DialogHeader>
+
+    <Input
+      value={editName}
+      onChange={(e) => setEditName(e.target.value)}
+      placeholder="Enter new name"
+    />
+
+    <DialogFooter>
+      <Button
+        onClick={() => {
+          if (editingDept) updateDepartment();
+          else updateSubDepartment();
+        }}
+      >
+        Update
+      </Button>
+    </DialogFooter>
+  </DialogContent>
+</Dialog>
       {/* Top Header */}
       <div className="rounded-[2rem] border border-green-100 bg-gradient-to-r from-[#eaf8ee] via-[#f4fbf6] to-white p-6 shadow-sm sm:p-8">
         <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-medium text-green-700 shadow-sm">
@@ -366,7 +430,33 @@ const Departments = () => {
                   }}
                   className="absolute right-4 top-4 rounded-full p-2 text-red-500 transition hover:bg-red-50 hover:text-red-700"
                 >
-                  <Trash2 size={16} />
+                  {/* <Trash2 size={16} /> */}
+                  <div className="absolute right-4 top-4 flex gap-2">
+  
+  {/* EDIT */}
+  <button
+    onClick={(e) => {
+      e.stopPropagation();
+      setEditingDept(d);
+      setEditName(d.name);
+    }}
+    className="rounded-full p-2 text-blue-500 hover:bg-blue-50"
+  >
+    <Pencil size={16} />
+  </button>
+
+  {/* DELETE */}
+  <button
+    onClick={(e) => {
+      e.stopPropagation();
+      deleteDepartment(d.id);
+    }}
+    className="rounded-full p-2 text-red-500 hover:bg-red-50"
+  >
+    <Trash2 size={16} />
+  </button>
+
+</div>
                 </button>
 
                 <div onClick={() => setSelectedDepartmentId(d.id)}>
@@ -476,7 +566,30 @@ const Departments = () => {
                     onClick={() => deleteSubDepartment(sub.id)}
                     className="absolute right-4 top-4 rounded-full p-2 text-red-500 transition hover:bg-red-50"
                   >
-                    <Trash2 size={16} />
+                    {/* <Trash2 size={16} /> */}
+                    <div className="absolute right-4 top-4 flex gap-2">
+
+  {/* EDIT */}
+  <button
+    onClick={() => {
+      setEditingSubDept(sub);
+      setEditName(sub.name);
+    }}
+    className="rounded-full p-2 text-blue-500 hover:bg-blue-50"
+  >
+    <Pencil size={16} />
+  </button>
+
+  {/* DELETE */}
+  <button
+    onClick={() => deleteSubDepartment(sub.id)}
+    className="rounded-full p-2 text-red-500 hover:bg-red-50"
+  >
+    <Trash2 size={16} />
+  </button>
+
+</div>
+                    
                   </button>
 
                   <div

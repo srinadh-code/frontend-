@@ -8,6 +8,7 @@ import axios from "axios";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+
 import {
   KeyRound,
   ArrowLeft,
@@ -91,10 +92,15 @@ const ForgotPassword = () => {
 
     try {
       // await axios.post("http://127.0.0.1:8000/api/verify-otp/", {
-      await axios.post( "https://resume-project-b.onrender.com/api/verify-otp", {
-        email: email,
-        otp: otp,
-      });
+      // await axios.post( "https://resume-project-b.onrender.com/api/verify-otp", {
+      //   email: email,
+      //   otp: otp,
+      // });
+
+      await axios.post(`${API_BASE}verify-otp/`, {
+  email,
+  otp,
+});
 
       setStep("reset");
     } catch (err: any) {
@@ -129,11 +135,17 @@ const ForgotPassword = () => {
 
     try {
       // const res = await axios.post("http://127.0.0.1:8000/api/reset-password/", {
-      const res = await axios.post("https://resume-project-b.onrender.com/api/reset-password", {
-        email: email,
-        otp: otp,
-        new_password: newPassword,
-      });
+      // const res = await axios.post("https://resume-project-b.onrender.com/api/reset-password", {
+      //   email: email,
+      //   otp: otp,
+      //   new_password: newPassword,
+      // });
+
+      const res=await axios.post(`${API_BASE}reset-password/`, {
+  email,
+  otp,
+  new_password: newPassword,
+});
 
       toast({
         title: "Password Reset Successful",
