@@ -55,7 +55,7 @@ const ForgotPassword = () => {
     setLoading(true);
 
     try {
-      const res = await axios.post(`${API_BASE}forgot-password/`, {
+      const res = await axios.post(`${API_BASE}/forgot-password/`, {
         email: email,
       });
 
