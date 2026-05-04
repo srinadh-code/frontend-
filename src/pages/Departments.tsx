@@ -561,18 +561,16 @@ const updateSubDepartment = async () => {
                   key={sub.id}
                   className="relative rounded-[1.5rem] border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md"
                 >
-                  <button
-                    onClick={() => deleteSubDepartment(sub.id)}
-                    className="absolute right-4 top-4 rounded-full p-2 text-red-500 transition hover:bg-red-50"
-                  >
+                 
                     {/* <Trash2 size={16} /> */}
                     <div className="absolute right-4 top-4 flex gap-2">
 
   <button
-    onClick={() => {
-      setEditingSubDept(sub);
-      setEditName(sub.name);
-    }}
+    onClick={(e) => {
+  e.stopPropagation();
+  setEditingSubDept(sub);
+  setEditName(sub.name);
+}}
     className="rounded-full p-2 text-blue-500 hover:bg-blue-50"
   >
     <Pencil size={16} />
@@ -586,8 +584,7 @@ const updateSubDepartment = async () => {
   </button>
 
 </div>
-                    
-                  </button>
+              
 
                   <div
                     className="cursor-pointer"
