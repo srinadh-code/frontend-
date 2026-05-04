@@ -152,39 +152,50 @@ const handleCustomChange = (sectionIndex, itemIndex, value) => {
 };
 
   const downloadPDF = async () => {
-    if (!resumeRef.current || !libsLoaded) return;
-    setIsDownloading(true);
+  if (!resumeRef.current || !libsLoaded) return;
 
-    try {
-      const { jsPDF } = window.jspdf;
-      const html2canvas = window.html2canvas;
-      const element = resumeRef.current;
+  setIsDownloading(true);
 
-      const canvas = await html2canvas(element, {
-        scale: 1.3,
-        useCORS: true,
-        logging: false,
-        backgroundColor: "#ffffff"
-      });
+  try {
+    const { jsPDF } = window.jspdf;
+    const html2canvas = window.html2canvas;
+    const element = resumeRef.current;
 
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4'
-      });
+    const canvas = await html2canvas(element, {
+      scale: 1.5,
+      useCORS: true,
+      backgroundColor: "#ffffff"
+    });
 
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+    const imgData = canvas.toDataURL("image/jpeg", 0.7);
 
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-      pdf.save(`${form.full_name.replace(/\s+/g, '_')}_Resume.pdf`);
-    } catch (error) {
-      console.error("Error generating PDF:", error);
-    } finally {
-      setIsDownloading(false);
+    const pdf = new jsPDF("p", "mm", "a4");
+
+    const imgWidth = 210;
+    const pageHeight = 297;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+    let position = 0;
+    let remainingHeight = imgHeight;
+
+    while (remainingHeight > 0) {
+      pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
+      remainingHeight -= pageHeight;
+
+      if (remainingHeight > 0) {
+        position -= pageHeight;
+        pdf.addPage();
+      }
     }
-  };
+
+    pdf.save(`${form.full_name.replace(/\s+/g, "_")}_Resume.pdf`);
+
+  } catch (error) {
+    console.error(error);
+  } finally {
+    setIsDownloading(false);
+  }
+};
 
   return (
     <div className="flex h-screen bg-slate-100 overflow-hidden font-sans">
