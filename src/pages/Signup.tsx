@@ -57,43 +57,39 @@ const Signup = () => {
 const handleSubmit = async (ev: React.FormEvent) => {
   ev.preventDefault();
 
-  if (!validate()) return;
+  const validate = () => {
+  const e: Record<string, string> = {};
 
-  setLoading(true); // 🔥 start loading
-
-  try {
-    await signup(username, email, password);
-
-    // ✅ success toast
-    toast({
-      title: "Account created!",
-      description: "Please login to continue",
-    });
-
-    // 🚀 instant redirect (no delay)
-    navigate("/login", { replace: true });
-
-  } catch (err: any) {
-    console.error("Signup Error:", err);
-
-    let message = "Signup failed. Try again.";
-
-    if (err.response?.data) {
-      const data = err.response.data;
-
-      if (data.username) message = data.username[0];
-      else if (data.email) message = data.email[0];
-      else if (data.password) message = data.password[0];
-      else if (data.detail) message = data.detail;
-    }
-
-    toast({
-      title: "Error",
-      description: message,
-    });
-
-    setLoading(false); // ❌ stop loading only on error
+  // ✅ USERNAME
+  if (!username.trim()) {
+    e.username = "Username is required";
+  } else if (username.trim().length < 3) {
+    e.username = "Username must be at least 3 characters";
   }
+
+  // ✅ EMAIL
+  if (!email.trim()) {
+    e.email = "Email is required";
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    e.email = "Enter a valid email address";
+  }
+
+  // ✅ PASSWORD
+  if (!password) {
+    e.password = "Password is required";
+  } 
+  else if (password.length < 6) {
+    e.password = "Password must be at least 6 characters";
+  } 
+  else if (!/[A-Z]/.test(password)) {
+    e.password = "Must contain at least one uppercase letter";
+  } 
+  else if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+    e.password = "Must contain at least one special character";
+  }
+
+  setErrors(e);
+  return Object.keys(e).length === 0;
 };
 
   return (
