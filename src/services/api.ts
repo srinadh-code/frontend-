@@ -39,10 +39,10 @@
 
 import axios, { AxiosRequestHeaders } from "axios";
 
-// ✅ Create API instance
+//  Create API instance
 const API = axios.create({
   baseURL: "https://resume-project-b.onrender.com/api/",
-  // ❌ REMOVE Content-Type
+  //  REMOVE Content-Type
 });
 
 // 🔐 Attach JWT token

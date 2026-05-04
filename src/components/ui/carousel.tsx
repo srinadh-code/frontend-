@@ -87,6 +87,7 @@ const Carousel = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivEl
 
       setApi(api);
     }, [api, setApi]);
+    
 
     React.useEffect(() => {
       if (!api) {

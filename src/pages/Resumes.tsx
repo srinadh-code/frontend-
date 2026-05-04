@@ -1,6 +1,6 @@
 
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import API from "@/services/api";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow
@@ -48,6 +48,7 @@ const Resumes = () => {
   const [resumes, setResumes] = useState<ResumeRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const [inputValue, setInputValue] = useState("");
   const [search, setSearch] = useState("");
@@ -113,6 +114,9 @@ const Resumes = () => {
 
     return () => clearTimeout(delay);
   }, [inputValue]);
+  useEffect(() => {
+  inputRef.current?.focus();
+}, [resumes]);
 
   //  MAIN TRIGGER
   useEffect(() => {
@@ -219,12 +223,19 @@ const downloadResume = (id: number) => {
         <p>{resumes.length} results</p>
       </div>
 
-      <input
+      {/* <input
         placeholder="Search..."
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
         className="w-full border px-3 py-2 rounded-md"
-      />
+      /> */}
+      <input
+  ref={inputRef}
+  placeholder="Search..."
+  value={inputValue}
+  onChange={(e) => setInputValue(e.target.value)}
+  className="w-full border px-3 py-2 rounded-md"
+/>
 
       <div className="flex gap-4">
 
