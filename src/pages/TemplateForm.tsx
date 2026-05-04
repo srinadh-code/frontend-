@@ -105,8 +105,7 @@ export default function App() {
     };
 
     Promise.all([
-      loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'),
-      loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js')
+      loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js')
     ]).then(() => {
       setLibsLoaded(true);
     });
@@ -151,50 +150,31 @@ const handleCustomChange = (sectionIndex, itemIndex, value) => {
   setForm({ ...form, customSections: updated });
 };
 
-  const downloadPDF = async () => {
-  if (!resumeRef.current || !libsLoaded) return;
+  const downloadPDF = () => {
+  if (!resumeRef.current) return;
 
   setIsDownloading(true);
 
-  try {
-    const { jsPDF } = window.jspdf;
-    const html2canvas = window.html2canvas;
-    const element = resumeRef.current;
+  const element = resumeRef.current;
 
-    const canvas = await html2canvas(element, {
-      scale: 1.5,
-      useCORS: true,
-      backgroundColor: "#ffffff"
-    });
+  const opt = {
+    margin: [0, 0, 0, 0],
+    filename: `${form.full_name.replace(/\s+/g, "_")}_Resume.pdf`,
+    image: { type: "jpeg", quality: 1 },
+    html2canvas: { scale: 2, useCORS: true },
+    jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
 
-    const imgData = canvas.toDataURL("image/jpeg", 0.7);
-
-    const pdf = new jsPDF("p", "mm", "a4");
-
-    const imgWidth = 210;
-    const pageHeight = 297;
-    const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-    let position = 0;
-    let remainingHeight = imgHeight;
-
-    while (remainingHeight > 0) {
-      pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
-      remainingHeight -= pageHeight;
-
-      if (remainingHeight > 0) {
-        position -= pageHeight;
-        pdf.addPage();
-      }
+    // 🔥 THIS FIXES YOUR ISSUE
+    pagebreak: {
+      mode: ["avoid-all", "css", "legacy"]
     }
+  };
 
-    pdf.save(`${form.full_name.replace(/\s+/g, "_")}_Resume.pdf`);
-
-  } catch (error) {
-    console.error(error);
-  } finally {
-    setIsDownloading(false);
-  }
+  window.html2pdf()
+    .set(opt)
+    .from(element)
+    .save()
+    .finally(() => setIsDownloading(false));
 };
 
   return (
@@ -561,7 +541,7 @@ const handleCustomChange = (sectionIndex, itemIndex, value) => {
 
     {/* SUMMARY */}
     {form.summary && (
-      <section>
+      <section className="no-break">
         <div className="flex items-center gap-2 mb-2">
           <h2 className="text-sm font-bold text-blue-600 uppercase">Summary</h2>
           <div className="flex-1 h-px bg-gray-300"></div>
@@ -573,7 +553,7 @@ const handleCustomChange = (sectionIndex, itemIndex, value) => {
 
     {/* EDUCATION */}
     {form.educations?.length > 0 && (
-      <section>
+      <section className="no-break">
         <div className="flex items-center gap-2 mb-2">
           <h2 className="text-sm font-bold text-blue-600 uppercase">Education</h2>
           <div className="flex-1 h-px bg-gray-300"></div>
@@ -599,7 +579,7 @@ const handleCustomChange = (sectionIndex, itemIndex, value) => {
 
     {/* SKILLS */}
     {form.skills?.length > 0 && (
-      <section>
+      <section className="no-break">
         <div className="flex items-center gap-2 mb-2">
           <h2 className="text-sm font-bold text-blue-600 uppercase">Skills</h2>
           <div className="flex-1 h-px bg-gray-300"></div>
@@ -617,7 +597,7 @@ const handleCustomChange = (sectionIndex, itemIndex, value) => {
 
     {/* INTERNSHIPS */}
     {form.internships?.length > 0 && (
-      <section>
+      <section className="no-break">
         <div className="flex items-center gap-2 mb-2">
           <h2 className="text-sm font-bold text-blue-600 uppercase">Internships</h2>
           <div className="flex-1 h-px bg-gray-300"></div>
@@ -636,7 +616,7 @@ const handleCustomChange = (sectionIndex, itemIndex, value) => {
 
 
       {form.projects?.length > 0 && (
-  <section>
+  <section className="no-break">
     <div className="flex items-center gap-2 mb-3">
       <h2 className="text-sm font-bold text-blue-600 uppercase">
         Projects
@@ -708,7 +688,7 @@ const handleCustomChange = (sectionIndex, itemIndex, value) => {
 
     {/* CUSTOM */}
     {form.customSections?.length > 0 && (
-      <section>
+      <section className="no-break">
         {form.customSections.map((section, i) => (
           <div key={i} className="mb-4">
 
@@ -729,7 +709,7 @@ const handleCustomChange = (sectionIndex, itemIndex, value) => {
 
     {/* EXPERIENCE (LAST) */}
     {form.experiences?.length > 0 && (
-      <section>
+      <section className="no-break">
         <div className="flex items-center gap-2 mb-2">
           <h2 className="text-sm font-bold text-blue-600 uppercase">Experience</h2>
           <div className="flex-1 h-px bg-gray-300"></div>

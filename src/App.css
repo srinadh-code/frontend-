@@ -47,3 +47,9 @@
   page-break-inside: avoid;
   break-inside: avoid;
 }
+
+
+.no-break {
+  page-break-inside: avoid;
+  break-insside: avoid;
+}
