@@ -46,7 +46,8 @@ interface ResumeRow {
 // };
 const Resumes = () => {
   const [resumes, setResumes] = useState<ResumeRow[]>([]);
-  const [loading, setLoading] = useState(true);
+  
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -78,7 +79,7 @@ const Resumes = () => {
   //  LOAD RESUMES
   const loadResumes = async (searchValue = "") => {
     try {
-      setLoading(true);
+      // setLoading(true);
 
       const params: any = {};
 
@@ -102,8 +103,8 @@ const Resumes = () => {
       setError("Unable to load resumes.");
       toast({ title: "Error", description: "Failed to load resumes" });
     } finally {
-      setLoading(false);
-    }
+  setIsInitialLoading(false);
+}
   };
 
   //  DEBOUNCE SEARCH
@@ -212,7 +213,7 @@ const downloadResume = (id: number) => {
     }
   };
 
-  if (loading) return <p className="text-center py-8">Loading...</p>;
+  if (isInitialLoading) return <p className="text-center py-8">Loading...</p>;
   if (error) return <p className="text-center py-8 text-red-500">{error}</p>;
 
   return (
