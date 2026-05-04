@@ -266,7 +266,7 @@ const Dashboard = () => {
               </div>
             </div>
 
-            <div className="rounded-[1.75rem] bg-gradient-to-br from-[#16a34a] to-[#15803d] p-6 text-white shadow-sm">
+            {/* <div className="rounded-[1.75rem] bg-gradient-to-br from-[#16a34a] to-[#15803d] p-6 text-white shadow-sm">
               <p className="text-sm font-medium text-green-100">
                 Resume Management
               </p>
@@ -277,7 +277,7 @@ const Dashboard = () => {
                 Upload resumes, review recent entries, and track department-wise
                 candidate flow with a cleaner dashboard experience.
               </p>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
