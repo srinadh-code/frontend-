@@ -39,33 +39,60 @@ const Signup = () => {
   const validate = () => {
   const e: Record<string, string> = {};
 
-  // ✅ USERNAME
+  //  USERNAME
   if (!username.trim()) {
     e.username = "Username is required";
   } else if (username.trim().length < 3) {
     e.username = "Username must be at least 3 characters";
   }
 
-  // ✅ EMAIL
+  //  EMAIL
   if (!email.trim()) {
     e.email = "Email is required";
   } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     e.email = "Enter a valid email address";
   }
 
-  // ✅ PASSWORD
-  if (!password) {
-    e.password = "Password is required";
-  } 
-  else if (password.length < 6) {
-    e.password = "Password must be at least 6 characters";
-  } 
-  else if (!/[A-Z]/.test(password)) {
-    e.password = "Must contain at least one uppercase letter";
-  } 
-  else if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
-    e.password = "Must contain at least one special character";
+  //  PASSWORD
+  // if (!password) {
+  //   e.password = "Password is required";
+  // } 
+  // else if (password.length < 6) {
+  //   e.password = "Password must be at least 6 characters";
+  // } 
+  // else if (!/[A-Z]/.test(password)) {
+  //   e.password = "Must contain at least one uppercase letter";
+  // } 
+  // else if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+  //   e.password = "Must contain at least one special character";
+  // }
+  const passwordErrors = [];
+
+if (!password) {
+  passwordErrors.push("Password is required");
+} else {
+  if (password.length < 6) {
+    passwordErrors.push("at least 6 characters");
   }
+
+  if (!/[A-Z]/.test(password)) {
+    passwordErrors.push("one uppercase letter");
+  }
+
+  if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+    passwordErrors.push("one special character");
+  }
+}
+
+// ✅ FINAL MESSAGE
+if (passwordErrors.length > 0) {
+  if (passwordErrors[0] === "Password is required") {
+    e.password = "Password is required";
+  } else {
+    e.password =
+      "Password must contain " + passwordErrors.join(", ");
+  }
+}
 
   setErrors(e);
   return Object.keys(e).length === 0;
