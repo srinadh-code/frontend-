@@ -39,48 +39,59 @@ const Signup = () => {
   const validate = () => {
   const e: Record<string, string> = {};
 
-  // ✅ USERNAME
+  // 🔹 USERNAME
+  const usernameErrors: string[] = [];
   if (!username.trim()) {
-    e.username = "Username is required";
+    usernameErrors.push("Username is required");
   } else if (username.trim().length < 3) {
-    e.username = "Username must be at least 3 characters";
+    usernameErrors.push("at least 3 characters");
   }
 
-  // ✅ EMAIL
+  if (usernameErrors.length > 0) {
+    e.username =
+      usernameErrors[0] === "Username is required"
+        ? "Username is required"
+        : "Username must contain " + usernameErrors.join(", ");
+  }
+
+  // 🔹 EMAIL
+  const emailErrors: string[] = [];
   if (!email.trim()) {
-    e.email = "Email is required";
+    emailErrors.push("Email is required");
   } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    e.email = "Enter a valid email address";
+    emailErrors.push("a valid email address");
   }
 
-  // ✅ PASSWORD
-  const passwordErrors = [];
-
-if (!password) {
-  passwordErrors.push("Password is required");
-} else {
-  if (password.length < 6) {
-    passwordErrors.push("at least 6 characters");
+  if (emailErrors.length > 0) {
+    e.email =
+      emailErrors[0] === "Email is required"
+        ? "Email is required"
+        : "Enter " + emailErrors.join(", ");
   }
 
-  if (!/[A-Z]/.test(password)) {
-    passwordErrors.push("one uppercase letter");
-  }
+  // 🔹 PASSWORD
+  const passwordErrors: string[] = [];
 
-  if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
-    passwordErrors.push("one special character");
-  }
-}
-
-// ✅ FINAL MESSAGE
-if (passwordErrors.length > 0) {
-  if (passwordErrors[0] === "Password is required") {
-    e.password = "Password is required";
+  if (!password) {
+    passwordErrors.push("Password is required");
   } else {
-    e.password =
-      "Password must contain " + passwordErrors.join(", ");
+    if (password.length < 6) {
+      passwordErrors.push("at least 6 characters");
+    }
+    if (!/[A-Z]/.test(password)) {
+      passwordErrors.push("one uppercase letter");
+    }
+    if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+      passwordErrors.push("one special character");
+    }
   }
-}
+
+  if (passwordErrors.length > 0) {
+    e.password =
+      passwordErrors[0] === "Password is required"
+        ? "Password is required"
+        : "Password must contain " + passwordErrors.join(", ");
+  }
 
   setErrors(e);
   return Object.keys(e).length === 0;
