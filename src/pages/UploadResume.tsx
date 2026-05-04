@@ -89,7 +89,7 @@ if (!skills.trim()) {
 }
 
 // EXPERIENCE
-if (!experience || Number(experience) <= 0) {
+if (!experience || Number(experience) < 0) {
   newErrors.experience = "Enter valid experience";
 }
 
