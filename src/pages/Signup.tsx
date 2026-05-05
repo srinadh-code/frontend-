@@ -84,7 +84,7 @@ if (!password) {
   }
 }
 
-// ✅ FINAL MESSAGE
+
 if (passwordErrors.length > 0) {
   if (passwordErrors[0] === "Password is required") {
     e.password = "Password is required";
@@ -105,18 +105,18 @@ const handleSubmit = async (ev: React.FormEvent) => {
 
   if (!validate()) return;
 
-  setLoading(true); // 🔥 start loading
+  setLoading(true); //  start loading
 
   try {
     await signup(username, email, password);
 
-    // ✅ success toast
+    // success toast
     toast({
       title: "Account created!",
       description: "Please login to continue",
     });
 
-    // 🚀 instant redirect (no delay)
+    //  instant redirect (no delay)
     navigate("/login", { replace: true });
 
   } catch (err: any) {
@@ -138,7 +138,7 @@ const handleSubmit = async (ev: React.FormEvent) => {
       description: message,
     });
 
-    setLoading(false); // ❌ stop loading only on error
+    setLoading(false); //  stop loading only on error
   }
 };
 

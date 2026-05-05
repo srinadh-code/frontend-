@@ -43,14 +43,14 @@ const [loading, setLoading] = useState(false);
 
   if (!validate()) return;
 
-  setLoading(true); // ✅ START LOADING
+  setLoading(true); //  START LOADING
 
   try {
     const res = await login(username, password);
 
     const isAdmin = res.is_admin;
 
-    // 🚀 INSTANT REDIRECT
+    //  INSTANT REDIRECT
     if (isAdmin) {
       navigate("/dashboard", { replace: true });
     } else {
@@ -69,7 +69,7 @@ const [loading, setLoading] = useState(false);
       description: message,
     });
 
-    setLoading(false); // ❌ only stop on error
+    setLoading(false); // only stop on error
   }
 };
 

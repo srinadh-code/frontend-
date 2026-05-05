@@ -365,7 +365,7 @@ const Profile = () => {
               Member Since
             </p>
             <h2 className="mt-1 text-xl font-bold text-slate-900">
-              {profile.date_joined || "N/A"}   {/* ✅ FIXED */}
+              {profile.date_joined || "N/A"}   {/*  FIXED */}
             </h2>
           </div>
         </div>
@@ -428,7 +428,7 @@ const Profile = () => {
               Member Since
             </Label>
             <p className="mt-2 text-lg font-semibold text-slate-900">
-              {profile.date_joined || "N/A"}   {/* ✅ FIXED */}
+              {profile.date_joined || "N/A"}   
             </p>
           </div>
         </div>

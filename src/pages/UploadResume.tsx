@@ -107,7 +107,7 @@ if (!file) {
   }
 }
 
-// 🚫 STOP IF ANY ERROR
+//  STOP IF ANY ERROR
 if (Object.keys(newErrors).length > 0) {
   setErrors(newErrors);
   return;
