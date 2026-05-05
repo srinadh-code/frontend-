@@ -134,5 +134,12 @@
   .dept-card-active {
     @apply border-primary bg-accent;
   }
+  .page {
+  width: 210mm;
+  min-height: 297mm;
+  padding: 20mm;
+  box-sizing: border-box;
+  page-break-after: always;
+}
   
 }
