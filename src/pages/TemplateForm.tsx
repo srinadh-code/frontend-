@@ -493,7 +493,8 @@ const handleCustomChange = (sectionIndex, itemIndex, value) => {
       </div>
 
    {/* RIGHT SIDE: THE PREVIEW */}
-<div className="hidden md:flex flex-1 bg-slate-200 p-10 overflow-y-auto justify-center">
+{/* <div className="hidden md:flex flex-1 bg-slate-200 p-10 overflow-y-auto justify-center"> */}
+<div className="hidden md:flex flex-1 bg-slate-200 p-10 justify-center">
   <div
   ref={resumeRef}
   className="w-[210mm] bg-white shadow-2xl p-16 flex flex-col gap-8 text-slate-800"
@@ -544,7 +545,7 @@ const handleCustomChange = (sectionIndex, itemIndex, value) => {
 
     {/* SUMMARY */}
     {form.summary && (
-      <section className="no-break">
+      <section >
         <div className="flex items-center gap-2 mb-2">
           <h2 className="text-sm font-bold text-blue-600 uppercase">Summary</h2>
           <div className="flex-1 h-px bg-gray-300"></div>
@@ -556,7 +557,7 @@ const handleCustomChange = (sectionIndex, itemIndex, value) => {
 
     {/* EDUCATION */}
     {form.educations?.length > 0 && (
-      <section className="no-break">
+      <section >
         <div className="flex items-center gap-2 mb-2">
           <h2 className="text-sm font-bold text-blue-600 uppercase">Education</h2>
           <div className="flex-1 h-px bg-gray-300"></div>
@@ -582,7 +583,7 @@ const handleCustomChange = (sectionIndex, itemIndex, value) => {
 
     {/* SKILLS */}
     {form.skills?.length > 0 && (
-      <section className="no-break">
+      <section >
         <div className="flex items-center gap-2 mb-2">
           <h2 className="text-sm font-bold text-blue-600 uppercase">Skills</h2>
           <div className="flex-1 h-px bg-gray-300"></div>
@@ -600,7 +601,7 @@ const handleCustomChange = (sectionIndex, itemIndex, value) => {
 
     {/* INTERNSHIPS */}
     {form.internships?.length > 0 && (
-      <section className="no-break">
+      <section >
         <div className="flex items-center gap-2 mb-2">
           <h2 className="text-sm font-bold text-blue-600 uppercase">Internships</h2>
           <div className="flex-1 h-px bg-gray-300"></div>
@@ -619,7 +620,7 @@ const handleCustomChange = (sectionIndex, itemIndex, value) => {
 
 
       {form.projects?.length > 0 && (
-  <section className="no-break">
+  <section >
     <div className="flex items-center gap-2 mb-3">
       <h2 className="text-sm font-bold text-blue-600 uppercase">
         Projects
@@ -667,12 +668,11 @@ const handleCustomChange = (sectionIndex, itemIndex, value) => {
 )}
 
         {/* DESCRIPTION */}
-        {p.description && (
-          <p className="text-sm text-gray-600 mt-1">
-            {p.description && (
+        {/* DESCRIPTION */}
+{p.description && (
   <ul className="list-disc ml-5 mt-1 text-sm text-gray-600 space-y-1">
     {p.description
-      .split(/\n|\.\s+/) // split by ENTER or ". "
+      .split(/\n|\.\s+/)
       .filter(line => line.trim() !== "")
       .map((line, index) => (
         <li key={index}>
@@ -681,8 +681,8 @@ const handleCustomChange = (sectionIndex, itemIndex, value) => {
       ))}
   </ul>
 )}
-          </p>
-        )}
+          
+        
 
       </div>
     ))}
@@ -691,7 +691,7 @@ const handleCustomChange = (sectionIndex, itemIndex, value) => {
 
     {/* CUSTOM */}
     {form.customSections?.length > 0 && (
-      <section className="no-break">
+      <section >
         {form.customSections.map((section, i) => (
           <div key={i} className="mb-4">
 
@@ -712,7 +712,7 @@ const handleCustomChange = (sectionIndex, itemIndex, value) => {
 
     {/* EXPERIENCE (LAST) */}
     {form.experiences?.length > 0 && (
-      <section className="no-break">
+      <section >
         <div className="flex items-center gap-2 mb-2">
           <h2 className="text-sm font-bold text-blue-600 uppercase">Experience</h2>
           <div className="flex-1 h-px bg-gray-300"></div>
