@@ -126,7 +126,7 @@ export default function App() {
   };
 
 
-  //  CUSTOM SECTIONS
+  // ✅ CUSTOM SECTIONS
 
 const addCustomSection = () => {
   setForm(prev => ({
@@ -164,13 +164,10 @@ const handleCustomChange = (sectionIndex, itemIndex, value) => {
     html2canvas: { scale: 2, useCORS: true },
     jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
 
-    //  THIS FIXES YOUR ISSUE
-    // pagebreak: {
-    //   mode: ["avoid-all", "css", "legacy"]
-    // }
+    // 🔥 THIS FIXES YOUR ISSUE
     pagebreak: {
-      mode: ["css", "legacy"]
-}
+      mode: ["avoid-all", "css", "legacy"]
+    }
   };
 
   window.html2pdf()
@@ -493,12 +490,11 @@ const handleCustomChange = (sectionIndex, itemIndex, value) => {
       </div>
 
    {/* RIGHT SIDE: THE PREVIEW */}
-{/* <div className="hidden md:flex flex-1 bg-slate-200 p-10 overflow-y-auto justify-center"> */}
-<div className="hidden md:flex flex-1 bg-slate-200 p-10 justify-center">
+<div className="hidden md:flex flex-1 bg-slate-200 p-10 overflow-y-auto justify-center">
   <div
-  ref={resumeRef}
-  className="w-[210mm] bg-white shadow-2xl p-16 flex flex-col gap-8 text-slate-800"
->
+    ref={resumeRef}
+    className="w-[210mm] min-h-[297mm] h-fit bg-white shadow-2xl p-16 flex flex-col gap-8 text-slate-800"
+  >
 
     {/* HEADER */}
     <div className="border-b-4 border-slate-800 pb-8">
@@ -545,7 +541,7 @@ const handleCustomChange = (sectionIndex, itemIndex, value) => {
 
     {/* SUMMARY */}
     {form.summary && (
-      <section >
+      <section className="no-break">
         <div className="flex items-center gap-2 mb-2">
           <h2 className="text-sm font-bold text-blue-600 uppercase">Summary</h2>
           <div className="flex-1 h-px bg-gray-300"></div>
@@ -557,7 +553,7 @@ const handleCustomChange = (sectionIndex, itemIndex, value) => {
 
     {/* EDUCATION */}
     {form.educations?.length > 0 && (
-      <section >
+      <section className="no-break">
         <div className="flex items-center gap-2 mb-2">
           <h2 className="text-sm font-bold text-blue-600 uppercase">Education</h2>
           <div className="flex-1 h-px bg-gray-300"></div>
@@ -583,7 +579,7 @@ const handleCustomChange = (sectionIndex, itemIndex, value) => {
 
     {/* SKILLS */}
     {form.skills?.length > 0 && (
-      <section >
+      <section className="no-break">
         <div className="flex items-center gap-2 mb-2">
           <h2 className="text-sm font-bold text-blue-600 uppercase">Skills</h2>
           <div className="flex-1 h-px bg-gray-300"></div>
@@ -601,7 +597,7 @@ const handleCustomChange = (sectionIndex, itemIndex, value) => {
 
     {/* INTERNSHIPS */}
     {form.internships?.length > 0 && (
-      <section >
+      <section className="no-break">
         <div className="flex items-center gap-2 mb-2">
           <h2 className="text-sm font-bold text-blue-600 uppercase">Internships</h2>
           <div className="flex-1 h-px bg-gray-300"></div>
@@ -620,7 +616,7 @@ const handleCustomChange = (sectionIndex, itemIndex, value) => {
 
 
       {form.projects?.length > 0 && (
-  <section >
+  <section className="no-break">
     <div className="flex items-center gap-2 mb-3">
       <h2 className="text-sm font-bold text-blue-600 uppercase">
         Projects
@@ -668,11 +664,12 @@ const handleCustomChange = (sectionIndex, itemIndex, value) => {
 )}
 
         {/* DESCRIPTION */}
-        {/* DESCRIPTION */}
-{p.description && (
+        {p.description && (
+          <p className="text-sm text-gray-600 mt-1">
+            {p.description && (
   <ul className="list-disc ml-5 mt-1 text-sm text-gray-600 space-y-1">
     {p.description
-      .split(/\n|\.\s+/)
+      .split(/\n|\.\s+/) // split by ENTER or ". "
       .filter(line => line.trim() !== "")
       .map((line, index) => (
         <li key={index}>
@@ -681,8 +678,8 @@ const handleCustomChange = (sectionIndex, itemIndex, value) => {
       ))}
   </ul>
 )}
-          
-        
+          </p>
+        )}
 
       </div>
     ))}
@@ -691,7 +688,7 @@ const handleCustomChange = (sectionIndex, itemIndex, value) => {
 
     {/* CUSTOM */}
     {form.customSections?.length > 0 && (
-      <section >
+      <section className="no-break">
         {form.customSections.map((section, i) => (
           <div key={i} className="mb-4">
 
@@ -712,7 +709,7 @@ const handleCustomChange = (sectionIndex, itemIndex, value) => {
 
     {/* EXPERIENCE (LAST) */}
     {form.experiences?.length > 0 && (
-      <section >
+      <section className="no-break">
         <div className="flex items-center gap-2 mb-2">
           <h2 className="text-sm font-bold text-blue-600 uppercase">Experience</h2>
           <div className="flex-1 h-px bg-gray-300"></div>
