@@ -126,7 +126,7 @@ export default function App() {
   };
 
 
-  // ✅ CUSTOM SECTIONS
+  //  CUSTOM SECTIONS
 
 const addCustomSection = () => {
   setForm(prev => ({
@@ -164,7 +164,7 @@ const handleCustomChange = (sectionIndex, itemIndex, value) => {
     html2canvas: { scale: 2, useCORS: true },
     jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
 
-    // 🔥 THIS FIXES YOUR ISSUE
+    //  THIS FIXES YOUR ISSUE
     // pagebreak: {
     //   mode: ["avoid-all", "css", "legacy"]
     // }
@@ -494,14 +494,10 @@ const handleCustomChange = (sectionIndex, itemIndex, value) => {
 
    {/* RIGHT SIDE: THE PREVIEW */}
 <div className="hidden md:flex flex-1 bg-slate-200 p-10 overflow-y-auto justify-center">
-  {/* <div
-    ref={resumeRef}
-    className="w-[210mm] min-h-[297mm] h-fit bg-white shadow-2xl p-16 flex flex-col gap-8 text-slate-800"
-  > */}
-  <div ref={resumeRef}>
-
-  {/* PAGE 1 */}
-  <div className="page bg-white shadow-2xl mb-6 flex flex-col gap-6 text-slate-800"></div>
+  <div
+  ref={resumeRef}
+  className="w-[210mm] bg-white shadow-2xl p-16 flex flex-col gap-8 text-slate-800"
+>
 
     {/* HEADER */}
     <div className="border-b-4 border-slate-800 pb-8">
